@@ -1,16 +1,29 @@
-import { Heading, Button, VStack, useColorMode } from "@chakra-ui/react";
+import { Routes, Route, Link } from "react-router-dom";
+import { Box, Button } from "@chakra-ui/react";
+import HomePage from "@/pages/HomePage";
+import WithdrawPlatformPage from "@/pages/WithdrawPlatformPage";
+import LoginPage from "@/pages/LoginPage";
+
 export default function App() {
-  const { colorMode, toggleColorMode } = useColorMode();
   return (
-    <VStack
-      minH="100vh"
-      justify="center"
-      bg={colorMode === "light" ? "gray.50" : "gray.800"}
-    >
-      <Heading color="teal.400">Chakra OK 🎉</Heading>
-      <Button colorScheme="teal" onClick={toggleColorMode}>
-        切換主題
-      </Button>
-    </VStack>
+    <Box p={4}>
+      <nav>
+        <Button as={Link} to="/" colorScheme="teal" mr={2}>
+          首頁
+        </Button>
+        <Button as={Link} to="/withdraw-platform" colorScheme="teal" mr={2}>
+          提幣平台
+        </Button>
+        <Button as={Link} to="/login" colorScheme="teal">
+          登入
+        </Button>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/withdraw-platform" element={<WithdrawPlatformPage />} />
+        <Route path="/login" element={<LoginPage />} />
+      </Routes>
+    </Box>
   );
 }
