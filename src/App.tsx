@@ -1,29 +1,42 @@
-import { Routes, Route, Link } from "react-router-dom";
-import { Box, Button } from "@chakra-ui/react";
-import HomePage from "@/pages/HomePage";
-import WithdrawPlatformPage from "@/pages/WithdrawPlatformPage";
-import LoginPage from "@/pages/LoginPage";
+// src/App.tsx
+import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Box, VStack, Button, Heading } from "@chakra-ui/react";
 
 export default function App() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   return (
-    <Box p={4}>
-      <nav>
-        <Button as={Link} to="/" colorScheme="teal" mr={2}>
+    <Box display="flex" minH="100vh">
+      {/* Sidebar */}
+      <VStack bg="gray.100" p={4} w="220px" align="stretch" spacing={3}>
+        <Heading size="md" mb={4}>
+          主選單
+        </Heading>
+        <Button as={Link} to="/home" colorScheme="teal" variant="ghost">
           首頁
         </Button>
-        <Button as={Link} to="/withdraw-platform" colorScheme="teal" mr={2}>
-          提幣平台
+        <Button
+          as={Link}
+          to="/home/withdraw-platform"
+          colorScheme="teal"
+          variant="ghost"
+        >
+          提幣平台設置
         </Button>
-        <Button as={Link} to="/login" colorScheme="teal">
-          登入
+        <Button colorScheme="red" onClick={handleLogout}>
+          登出
         </Button>
-      </nav>
+      </VStack>
 
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/withdraw-platform" element={<WithdrawPlatformPage />} />
-        <Route path="/login" element={<LoginPage />} />
-      </Routes>
+      {/* 主內容區域 */}
+      <Box flex="1" p={8}>
+        <Outlet /> {/* 這裡渲染 HomePage 或 WithdrawPlatformPage */}
+      </Box>
     </Box>
   );
 }

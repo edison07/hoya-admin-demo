@@ -1,3 +1,5 @@
+import { Heading } from "@chakra-ui/react";
+
 export default function HomePage() {
-  return <h1>這是首頁</h1>;
+  return <Heading>歡迎來到主頁 🎉</Heading>;
 }
