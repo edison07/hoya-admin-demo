@@ -10,9 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.2.4",
+    "@chakra-ui/react": "^2.10.9",
+    "@chakra-ui/theme-tools": "^2.2.6",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@tailwindcss/vite": "^4.1.16",
     "@tanstack/react-query": "^5.90.6",
     "axios": "^1.13.2",
+    "chakra-react-select": "^4.10.1",
+    "framer-motion": "^10.18.0",
     "react": "18",
     "react-dom": "18",
     "tailwindcss": "^4.1.16"

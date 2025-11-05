@@ -1,17 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
-
+import { Heading, Button, VStack, useColorMode } from "@chakra-ui/react";
 export default function App() {
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["user"],
-    queryFn: async () => {
-      const res = await fetch("/api/user");
-      if (!res.ok) throw new Error("Network error");
-      return res.json();
-    },
-  });
-
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {(error as Error).message}</p>;
-
-  return <p>Username: {data.name}</p>;
+  const { colorMode, toggleColorMode } = useColorMode();
+  return (
+    <VStack
+      minH="100vh"
+      justify="center"
+      bg={colorMode === "light" ? "gray.50" : "gray.800"}
+    >
+      <Heading color="teal.400">Chakra OK 🎉</Heading>
+      <Button colorScheme="teal" onClick={toggleColorMode}>
+        切換主題
+      </Button>
+    </VStack>
+  );
 }
