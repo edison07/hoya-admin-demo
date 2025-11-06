@@ -29,10 +29,10 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
         {/* // 實際的輸入框元素 */}
         <input
           ref={ref} // 將轉發的 ref 附加到此 input 元素，以便父元件直接操作
-          className={`w-full rounded-lg border px-4 py-3 text-gray-900 transition-all duration-200 placeholder:text-gray-400 focus:outline-none ${
+          className={`w-70 rounded-lg px-5 py-3 text-gray-900 transition-all duration-200 placeholder:text-gray-400 focus:outline-none ${
             // 根據 error 屬性動態改變邊框和背景顏色，提供視覺回饋
             error
-              ? "border-red-400 bg-red-50 focus:border-red-500"
+              ? "border-red-500 bg-red-50 focus:border-red-600"
               : "border-gray-300 bg-white focus:border-blue-600 focus:ring-2"
           } ${className}`} // 合併基礎樣式、錯誤樣式和客製化樣式
           style={{ color: "#111827" }} // 設定輸入文字顏色
@@ -40,8 +40,8 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
         />
         {/* // 條件渲染錯誤訊息：只有當 error 存在時才顯示 */}
         {error && (
-          <p className="relative z-10 mt-1.5 bg-red-100 p-2 text-sm font-bold text-red-600">
-            ⚠️ {error}
+          <p className="relative z-10 mt-1.5 p-2 text-sm text-red-600">
+            {error}
           </p>
         )}
       </div>

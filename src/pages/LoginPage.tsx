@@ -44,6 +44,17 @@ export default function LoginPage() {
     }
   };
 
+  const handleBlur = async (field: keyof FormErrors) => {
+    try {
+      await loginSchema.validateAt(field, { username, password });
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        setErrors((prev) => ({ ...prev, [field]: error.message }));
+      }
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -124,6 +135,7 @@ export default function LoginPage() {
                   placeholder="請輸入密碼"
                   value={password}
                   onChange={handlePasswordChange}
+                  onBlur={() => handleBlur("password")}
                   error={errors.password}
                   disabled={loginMutation.isPending}
                   autoComplete="current-password"
