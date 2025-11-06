@@ -3,13 +3,14 @@
 /* === Default (亮色主題) === */
 @theme {
   /* === 主色：橘色系 === */
-  --color-primary: #ff5722b3);
+  --color-primary: #ff5722);
 
   /* 輔助色 */
   --color-secondary: #9ca3af; /* 灰色 */
   --color-success: #16a34a; /* 綠色 */
   --color-danger: #dc2626; /* 紅色 */
   --color-warning: #facc15; /* 黃色 */
+  --color-select: #007FFF;
 
   /* 介面底色 */
   --color-background: #fff7ed;

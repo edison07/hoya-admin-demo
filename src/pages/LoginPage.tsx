@@ -143,10 +143,7 @@ export default function LoginPage() {
 
               <button
                 type="submit"
-                disabled={
-                  loginMutation.isPending ||
-                  !loginSchema.isValidSync({ username, password })
-                }
+                disabled={loginMutation.isPending}
                 className="bg-primary mx-auto flex w-[200px] items-center justify-center rounded-lg px-4 py-3 font-bold text-white disabled:opacity-50"
               >
                 {loginMutation.isPending ? (

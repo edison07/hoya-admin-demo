@@ -33,15 +33,15 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
             // 根據 error 屬性動態改變邊框和背景顏色，提供視覺回饋
             error
               ? "border-red-400 bg-red-50 focus:border-red-500"
-              : "border-gray-300 bg-white focus:border-blue-600 focus:ring-2 focus:ring-red-500"
+              : "border-gray-300 bg-white focus:border-blue-600 focus:ring-2"
           } ${className}`} // 合併基礎樣式、錯誤樣式和客製化樣式
           style={{ color: "#111827" }} // 設定輸入文字顏色
           {...props} // 展開所有其他傳遞的 HTML input 屬性
         />
         {/* // 條件渲染錯誤訊息：只有當 error 存在時才顯示 */}
         {error && (
-          <p className="animate-in fade-in slide-in-from-top-1 mt-1.5 text-sm text-red-600">
-            {error}
+          <p className="relative z-10 mt-1.5 bg-red-100 p-2 text-sm font-bold text-red-600">
+            ⚠️ {error}
           </p>
         )}
       </div>
