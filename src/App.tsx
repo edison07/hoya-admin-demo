@@ -17,12 +17,12 @@ export default function App() {
         <Heading size="md" mb={4}>
           主選單
         </Heading>
-        <Button as={Link} to="/home" colorScheme="teal" variant="ghost">
+        <Button as={Link} to="/" colorScheme="teal" variant="ghost">
           首頁
         </Button>
         <Button
           as={Link}
-          to="/home/withdraw-platform"
+          to="/withdraw-platform"
           colorScheme="teal"
           variant="ghost"
         >

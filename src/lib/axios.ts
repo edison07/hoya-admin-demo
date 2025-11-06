@@ -17,7 +17,13 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // 統一錯誤處理
+    // 對於登入 API 的 401 錯誤，不要重新導向，而是返回錯誤資料
+    if (error.response?.status === 401 && error.config?.url?.includes('/auth/login')) {
+      // 登入失敗，直接返回 response data
+      return Promise.resolve(error.response);
+    }
+
+    // 其他 401 錯誤統一處理
     if (error.response?.status === 401) {
       console.error("Unauthorized, redirecting...");
       // window.location.href = "/login";
