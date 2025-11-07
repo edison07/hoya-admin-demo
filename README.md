@@ -137,7 +137,7 @@ npm run preview
 目前模擬了以下 API：
 
 - `POST /auth/login` - 登入 API
-  - 測試帳號：`admin` / `password123`
+  - 測試帳號：`admin` / `Admin123`
   - 返回 JWT Token 和使用者資訊
 
 ### 如何新增模擬 API？
@@ -270,7 +270,7 @@ FormInput 元件支援密碼顯示切換：
 
 ```
 帳號：admin
-密碼：password123
+密碼：Admin123
 ```
 
 ## 開發指南
