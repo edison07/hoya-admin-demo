@@ -7,7 +7,7 @@
 import { useMutation } from "@tanstack/react-query"; // useMutation: 處理變更操作的 Hook
 
 // React Router 相關匯入
-import { useNavigate } from "react-router-dom"; // useNavigate: 程式化導航 Hook
+import { useNavigate, useLocation } from "react-router-dom"; // useNavigate: 程式化導航 Hook, useLocation: 取得當前位置
 
 // 服務層匯入
 import { authService } from "@/services/auth.service"; // 認證服務
@@ -21,7 +21,7 @@ import type { LoginRequest } from "@/types/auth"; // 登入請求類型
  * 1. 呼叫登入 API
  * 2. 儲存認證 Token 到 localStorage
  * 3. 儲存使用者資訊到 localStorage
- * 4. 導航到首頁
+ * 4. 導航到原頁面或首頁
  *
  * @returns UseMutationResult - React Query mutation 物件
  *   - mutate/mutateAsync: 執行登入
@@ -32,6 +32,9 @@ import type { LoginRequest } from "@/types/auth"; // 登入請求類型
 export const useLogin = () => {
   // 取得導航函式
   const navigate = useNavigate();
+
+  // 取得當前位置（用於獲取從哪裡被重新導向過來的）
+  const location = useLocation();
 
   // 返回 React Query mutation
   return useMutation({
@@ -50,8 +53,12 @@ export const useLogin = () => {
         // 將使用者資訊序列化後儲存到 localStorage
         localStorage.setItem("user", JSON.stringify(data.data.user));
 
-        // 導航到首頁
-        navigate("/");
+        // 取得使用者原本想訪問的頁面（從 location.state.from 讀取）
+        // 如果沒有，則導航到首頁
+        const from = (location.state as any)?.from?.pathname || "/";
+
+        // 導航到目標頁面，replace: true 表示替換當前歷史記錄
+        navigate(from, { replace: true });
       }
     },
   });
