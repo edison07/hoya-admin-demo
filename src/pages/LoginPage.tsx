@@ -7,11 +7,9 @@ import {
   Text,
   Image,
   VStack,
-  IconButton,
   useToast,
   Spinner,
 } from "@chakra-ui/react";
-import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useLogin } from "@/hooks/useLogin";
 import { FormInput } from "@/components/FormInput";
 import { loginSchema } from "@/schemas/auth.schema";
@@ -150,29 +148,17 @@ export default function LoginPage() {
                 autoComplete="username"
               />
 
-              <Box w="full" position="relative">
-                <FormInput
-                  label="密碼"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="請輸入密碼"
-                  value={password}
-                  onChange={handlePasswordChange}
-                  onBlur={() => handleBlur("password")}
-                  error={errors.password}
-                  disabled={loginMutation.isPending}
-                  autoComplete="current-password"
-                />
-                <IconButton
-                  aria-label="Toggle password visibility"
-                  icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
-                  onClick={() => setShowPassword(!showPassword)}
-                  position="absolute"
-                  right={3}
-                  top="38px"
-                  variant="ghost"
-                  size="sm"
-                />
-              </Box>
+              <FormInput
+                label="密碼"
+                type="password"
+                placeholder="請輸入密碼"
+                value={password}
+                onChange={handlePasswordChange}
+                onBlur={() => handleBlur("password")}
+                error={errors.password}
+                disabled={loginMutation.isPending}
+                autoComplete="current-password"
+              />
 
               <Button
                 type="submit"
