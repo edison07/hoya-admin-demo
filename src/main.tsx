@@ -23,13 +23,15 @@ const queryClient = new QueryClient();
 
 /**
  * 啟用 Mock Service Worker (MSW) 用於 API 模擬
- * 僅在開發環境中啟用，用於模擬後端 API 回應
+ * 根據環境變數決定是否啟用
  *
  * @returns Promise<void> - 非同步函式，等待 worker 啟動完成
  */
 async function enableMocking() {
-  // 檢查是否為開發環境
-  if (import.meta.env.DEV) {
+  // 檢查是否為開發環境且環境變數啟用 MSW
+  const enableMSW = import.meta.env.VITE_ENABLE_MSW === "true";
+
+  if (import.meta.env.DEV && enableMSW) {
     // 動態匯入 MSW worker
     const { worker } = await import("./mocks/browser");
     // 啟動 service worker

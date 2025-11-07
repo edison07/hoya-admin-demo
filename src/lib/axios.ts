@@ -9,9 +9,10 @@ import axios from "axios"; // Axios: 流行的 HTTP 客戶端庫
 /**
  * 建立 Axios 實例
  * 預設配置包含 baseURL 和 timeout
+ * 使用環境變數配置 API 基礎路徑
  */
 export const api = axios.create({
-  baseURL: "/api", // API 基礎路徑，所有請求會加上此前綴
+  baseURL: import.meta.env.VITE_API_BASE_URL || "/api", // 從環境變數讀取 API 基礎路徑
   timeout: 10000, // 請求逾時時間：10 秒（10000 毫秒）
 });
 
