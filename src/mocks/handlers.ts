@@ -1,43 +1,71 @@
-import { http, HttpResponse, delay } from "msw";
+/**
+ * handlers.ts - MSW API 處理器定義
+ * 定義所有模擬 API 端點的處理邏輯和回應資料
+ */
 
+// MSW 核心工具匯入
+import { http, HttpResponse, delay } from "msw";
+// http: 定義 HTTP 請求處理器
+// HttpResponse: 建立 HTTP 回應
+// delay: 模擬網路延遲
+
+/**
+ * API 處理器陣列
+ * 包含所有需要模擬的 API 端點
+ */
 export const handlers = [
+  /**
+   * GET /api/user - 取得使用者資訊
+   * 測試用端點，返回簡單的使用者物件
+   */
   http.get("/api/user", () => {
+    // 返回 JSON 回應
     return HttpResponse.json({ name: "Edison" });
   }),
 
-  // 登入 API
+  /**
+   * POST /api/auth/login - 使用者登入
+   * 驗證使用者名稱和密碼，返回認證 Token 和使用者資訊
+   *
+   * 測試帳號：
+   * - 使用者名稱: admin
+   * - 密碼: Admin123
+   */
   http.post("/api/auth/login", async ({ request }) => {
-    await delay(800); // 模擬網路延遲
+    // 模擬網路延遲 800 毫秒，讓體驗更真實
+    await delay(800);
 
+    // 解析請求 body 為 JSON
     const body = (await request.json()) as {
-      username: string;
-      password: string;
+      username: string; // 使用者名稱
+      password: string; // 密碼
     };
 
-    // 模擬驗證邏輯
+    // 模擬驗證邏輯：檢查使用者名稱和密碼是否正確
     if (body.username === "admin" && body.password === "Admin123") {
+      // 登入成功：返回 Token 和使用者資訊
       return HttpResponse.json({
-        success: true,
+        success: true, // 成功標誌
         data: {
-          token: "mock-jwt-token-" + Date.now(),
+          token: "mock-jwt-token-" + Date.now(), // 模擬 JWT Token（帶時間戳確保唯一性）
           user: {
-            id: 1,
-            username: "admin",
-            name: "管理員",
-            email: "admin@example.com",
+            id: 1, // 使用者 ID
+            username: "admin", // 使用者名稱
+            name: "管理員", // 顯示名稱
+            email: "admin@example.com", // 電子郵件
           },
         },
-        message: "登入成功",
+        message: "登入成功", // 成功訊息
       });
     }
 
-    // 登入失敗
+    // 登入失敗：返回錯誤訊息和 401 狀態碼
     return HttpResponse.json(
       {
-        success: false,
-        message: "帳號或密碼錯誤",
+        success: false, // 失敗標誌
+        message: "帳號或密碼錯誤", // 錯誤訊息
       },
-      { status: 401 },
+      { status: 401 }, // HTTP 401 Unauthorized
     );
   }),
 ];
