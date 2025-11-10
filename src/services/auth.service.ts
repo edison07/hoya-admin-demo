@@ -7,7 +7,7 @@
 import { api } from "@/lib/axios"; // 配置好的 axios 實例
 
 // 類型定義匯入
-import type { LoginRequest, LoginResponse } from "@/types/auth"; // 登入請求和回應的類型
+import type { LoginRequest, LoginResponse, User } from "@/types/auth"; // 登入請求和回應的類型、使用者類型
 
 /**
  * 認證服務物件
@@ -74,5 +74,18 @@ export const authService = {
     // 使用雙重否定（!!）將字串轉換為布林值
     // 若 token 存在（非空字串），返回 true；否則返回 false
     return !!localStorage.getItem("token");
+  },
+
+  /**
+   * 取得使用者資訊
+   * 從 localStorage 讀取儲存的使用者資訊
+   *
+   * @returns User | null - 使用者物件，若不存在則返回 null
+   */
+  getUserInfo: (): User | null => {
+    // 從 localStorage 讀取使用者資訊
+    const userStr = localStorage.getItem("user");
+    // 若存在則解析 JSON，否則返回 null
+    return userStr ? JSON.parse(userStr) : null;
   },
 };
