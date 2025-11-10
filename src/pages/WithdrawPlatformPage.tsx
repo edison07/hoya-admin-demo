@@ -13,7 +13,6 @@ import {
   GridItem,
   FormControl,
   FormLabel,
-  FormErrorMessage,
   Input,
   Select,
   Button,
@@ -29,18 +28,15 @@ import {
   Divider,
   Card,
   CardBody,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  ModalCloseButton,
-  Switch,
-  Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+
+// 類型定義匯入
+import type { Platform } from "@/types/platform";
+
+// 元件匯入
+import EditPlatformModal from "@/components/WithdrawPlatform/EditPlatformModal";
 
 /**
  * 提幣平台設置頁面元件
@@ -56,11 +52,7 @@ export default function WithdrawPlatformPage() {
 
   // Modal 控制
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [editingPlatform, setEditingPlatform] = useState<any>(null);
-
-  // 編輯表單狀態
-  const [editWithdrawEnabled, setEditWithdrawEnabled] = useState(false);
-  const [editRemark, setEditRemark] = useState("");
+  const [editingPlatform, setEditingPlatform] = useState<Platform | null>(null);
 
   // 模擬平台資料（使用 useState 管理，以便更新）
   const [mockData, setMockData] = useState([
@@ -190,21 +182,17 @@ export default function WithdrawPlatformPage() {
   };
 
   // 打開編輯 Modal
-  const handleEdit = (platform: any) => {
+  const handleEdit = (platform: Platform) => {
     setEditingPlatform(platform);
-    setEditWithdrawEnabled(platform.withdrawEnabled);
-    setEditRemark(platform.remark);
     onOpen();
   };
 
   // 確定修改
-  const handleConfirmEdit = () => {
+  const handleConfirmEdit = (data: {
+    withdrawEnabled: boolean;
+    remark: string;
+  }) => {
     if (!editingPlatform) return;
-
-    // 驗證備註是否為空
-    if (!editRemark || editRemark.trim().length === 0) {
-      return;
-    }
 
     // 生成當前時間字串 (格式: YYYY-MM-DD HH:mm:ss)
     const now = new Date();
@@ -215,8 +203,8 @@ export default function WithdrawPlatformPage() {
       platform.id === editingPlatform.id
         ? {
             ...platform,
-            withdrawEnabled: editWithdrawEnabled,
-            remark: editRemark,
+            withdrawEnabled: data.withdrawEnabled,
+            remark: data.remark,
             updateTime: updateTime,
           }
         : platform,
@@ -228,23 +216,22 @@ export default function WithdrawPlatformPage() {
       platform.id === editingPlatform.id
         ? {
             ...platform,
-            withdrawEnabled: editWithdrawEnabled,
-            remark: editRemark,
+            withdrawEnabled: data.withdrawEnabled,
+            remark: data.remark,
             updateTime: updateTime,
           }
         : platform,
     );
     setFilteredData(updatedFilteredData);
 
-    // 關閉 Modal
+    // 重置 editingPlatform 並關閉 Modal
+    setEditingPlatform(null);
     onClose();
   };
 
   // 取消修改
   const handleCancelEdit = () => {
     setEditingPlatform(null);
-    setEditWithdrawEnabled(false);
-    setEditRemark("");
     onClose();
   };
 
@@ -405,76 +392,12 @@ export default function WithdrawPlatformPage() {
       </Card>
 
       {/* 修改平台 Modal */}
-      <Modal isOpen={isOpen} onClose={handleCancelEdit} isCentered>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>修改 {editingPlatform?.platformName}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            {/* 提幣功能開關 */}
-            <FormControl display="flex" alignItems="center" mb={4}>
-              <FormLabel htmlFor="withdraw-switch" mb={0}>
-                提幣功能
-              </FormLabel>
-              <Switch
-                id="withdraw-switch"
-                isChecked={editWithdrawEnabled}
-                onChange={(e) => setEditWithdrawEnabled(e.target.checked)}
-              />
-            </FormControl>
-
-            {/* 備註輸入框 */}
-            <FormControl
-              isRequired
-              isInvalid={!editRemark || editRemark.trim().length === 0}
-            >
-              <Flex align="flex-start" gap={4}>
-                <FormLabel mt={2} minW="60px">
-                  備註
-                </FormLabel>
-                <Box flex="1">
-                  <Textarea
-                    value={editRemark}
-                    onChange={(e) => {
-                      setEditRemark(e.target.value);
-                    }}
-                    placeholder="請輸入備註（1-200字）"
-                    maxLength={200}
-                    rows={4}
-                    borderColor={
-                      !editRemark || editRemark.trim().length === 0
-                        ? "red.500"
-                        : "inherit"
-                    }
-                    _focus={{
-                      borderColor: "teal.500",
-                      boxShadow: "0 0 0 1px teal.500",
-                      outline: "none",
-                    }}
-                  />
-                  {(!editRemark || editRemark.trim().length === 0) && (
-                    <FormErrorMessage>此為必填項</FormErrorMessage>
-                  )}
-                </Box>
-              </Flex>
-            </FormControl>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button
-              variant="ghost"
-              colorScheme="teal"
-              mr={3}
-              onClick={handleCancelEdit}
-            >
-              取消
-            </Button>
-            <Button colorScheme="teal" onClick={handleConfirmEdit}>
-              確定
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <EditPlatformModal
+        isOpen={isOpen}
+        platform={editingPlatform}
+        onClose={handleCancelEdit}
+        onConfirm={handleConfirmEdit}
+      />
     </Box>
   );
 }
