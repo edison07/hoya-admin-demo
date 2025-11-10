@@ -14,3 +14,17 @@ export interface Platform {
   remark: string; // 備註
   updateTime: string; // 更新時間
 }
+
+/**
+ * 平台日誌介面
+ * 定義平台操作日誌的資料結構
+ */
+export interface PlatformLog {
+  id: number; // 日誌唯一識別碼
+  platformId: number; // 平台 ID
+  item: string; // 異動項目（修改、新增）
+  beforeValue: string; // 異動前的值（多行格式）
+  afterValue: string; // 異動後的值（多行格式）
+  operator: string; // 操作用戶
+  operateTime: string; // 操作時間
+}

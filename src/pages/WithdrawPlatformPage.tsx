@@ -18,9 +18,11 @@ import PlatformTable from "@/components/WithdrawPlatform/PlatformTable";
 import PlatformSearchFilters, {
   type SearchFilters,
 } from "@/components/WithdrawPlatform/PlatformSearchFilters";
+import PlatformLogModal from "@/components/WithdrawPlatform/PlatformLogModal";
 
 // Mock 資料匯入
 import { mockPlatforms } from "@/mocks/platformData";
+import { mockPlatformLogs } from "@/mocks/platformLogData";
 
 // 工具函數匯入
 import { formatDateTime } from "@/utils/dateUtils";
@@ -32,9 +34,17 @@ import { formatDateTime } from "@/utils/dateUtils";
  * @returns JSX.Element - 提幣平台設置頁面 UI
  */
 export default function WithdrawPlatformPage() {
-  // Modal 控制
+  // 編輯 Modal 控制
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [editingPlatform, setEditingPlatform] = useState<Platform | null>(null);
+
+  // 日誌 Modal 控制
+  const {
+    isOpen: isLogOpen,
+    onOpen: onLogOpen,
+    onClose: onLogClose,
+  } = useDisclosure();
+  const [logPlatform, setLogPlatform] = useState<Platform | null>(null);
 
   // 平台資料（使用 useState 管理，以便更新）
   const [mockData, setMockData] = useState<Platform[]>(mockPlatforms);
@@ -132,6 +142,18 @@ export default function WithdrawPlatformPage() {
     onClose();
   };
 
+  // 打開日誌 Modal
+  const handleViewLog = (platform: Platform) => {
+    setLogPlatform(platform);
+    onLogOpen();
+  };
+
+  // 關閉日誌 Modal
+  const handleCloseLog = () => {
+    setLogPlatform(null);
+    onLogClose();
+  };
+
   return (
     <Box>
       {/* 搜尋/篩選區域 */}
@@ -142,7 +164,11 @@ export default function WithdrawPlatformPage() {
       />
 
       {/* 平台列表表格 */}
-      <PlatformTable data={filteredData} onEdit={handleEdit} />
+      <PlatformTable
+        data={filteredData}
+        onEdit={handleEdit}
+        onViewLog={handleViewLog}
+      />
 
       {/* 修改平台 Modal */}
       <EditPlatformModal
@@ -150,6 +176,14 @@ export default function WithdrawPlatformPage() {
         platform={editingPlatform}
         onClose={handleCancelEdit}
         onConfirm={handleConfirmEdit}
+      />
+
+      {/* 日誌 Modal */}
+      <PlatformLogModal
+        isOpen={isLogOpen}
+        platform={logPlatform}
+        logs={mockPlatformLogs}
+        onClose={handleCloseLog}
       />
     </Box>
   );
