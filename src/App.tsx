@@ -128,9 +128,9 @@ export default function App() {
 
   return (
     // 主容器：使用 flexbox 佈局，最小高度為整個視窗高度
-    <Box display="flex" minH="100vh" flexDirection="column">
+    <Box display="flex" minH="100vh" flexDirection="column" bg="#F7FAFC">
       {/* 頂部導覽列 */}
-      <Flex bg="white" px={8} py={4} justify="flex-end" align="center">
+      <Flex px={8} py={4} justify="flex-end" align="center">
         {/* 使用者選單 */}
         <Menu>
           <MenuButton
@@ -274,7 +274,7 @@ export default function App() {
 
         {/* 主內容區域 */}
         {/* flex="1": 佔據剩餘空間 */}
-        <Box flex="1">
+        <Box flex="1" p={6}>
           {/* 麵包屑導航 */}
           <Breadcrumb
             spacing="8px"
