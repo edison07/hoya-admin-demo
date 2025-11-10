@@ -4,7 +4,7 @@
  */
 
 // React 核心匯入
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 // Chakra UI 元件匯入
 import {
@@ -28,6 +28,7 @@ import {
   Box,
   Button,
 } from "@chakra-ui/react";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 
 // 自定義元件匯入
 import DateRangePicker from "@/components/DateRangePicker";
@@ -58,9 +59,27 @@ export default function PlatformLogModal({
   logs,
   onClose,
 }: PlatformLogModalProps) {
-  // 日期區間篩選狀態
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  // 預設日期範圍
+  const DEFAULT_START_DATE = "2022-10-14";
+  const DEFAULT_END_DATE = new Date().toISOString().split("T")[0]; // 今天的日期 (YYYY-MM-DD)
+
+  // 選擇的日期（尚未查詢）
+  const [selectedStartDate, setSelectedStartDate] = useState(DEFAULT_START_DATE);
+  const [selectedEndDate, setSelectedEndDate] = useState(DEFAULT_END_DATE);
+
+  // 實際用於篩選的日期（點擊查詢後）
+  const [startDate, setStartDate] = useState(DEFAULT_START_DATE);
+  const [endDate, setEndDate] = useState(DEFAULT_END_DATE);
+
+  // 當 Modal 打開時，重置為預設日期
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedStartDate(DEFAULT_START_DATE);
+      setSelectedEndDate(DEFAULT_END_DATE);
+      setStartDate(DEFAULT_START_DATE);
+      setEndDate(DEFAULT_END_DATE);
+    }
+  }, [isOpen, DEFAULT_START_DATE, DEFAULT_END_DATE]);
 
   // 篩選後的日誌資料
   const filteredLogs = useMemo(() => {
@@ -99,21 +118,54 @@ export default function PlatformLogModal({
         <ModalHeader>日誌 {platform?.platformName}</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6} overflowY="auto" maxH="calc(80vh - 80px)">
-          {/* 日期區間選擇器 */}
-          <Flex gap={4} mb={4} align="flex-end">
+          {/* 日期區間選擇器與操作按鈕 */}
+          <Flex gap={4} mb={4} align="flex-end" justify="space-between">
             <FormControl w="230px">
               <FormLabel fontSize="sm" fontWeight="semibold">
                 操作時間
               </FormLabel>
               <DateRangePicker
-                startDate={startDate}
-                endDate={endDate}
+                startDate={selectedStartDate}
+                endDate={selectedEndDate}
                 onChange={(dates) => {
-                  setStartDate(dates.startDate);
-                  setEndDate(dates.endDate);
+                  setSelectedStartDate(dates.startDate);
+                  setSelectedEndDate(dates.endDate);
                 }}
               />
             </FormControl>
+            <Flex gap={2}>
+              <Button
+                variant="ghost"
+                colorScheme="teal"
+                isDisabled
+                rightIcon={<ChevronDownIcon />}
+              >
+                展開
+              </Button>
+              <Button
+                variant="ghost"
+                colorScheme="teal"
+                onClick={() => {
+                  setSelectedStartDate(DEFAULT_START_DATE);
+                  setSelectedEndDate(DEFAULT_END_DATE);
+                  setStartDate(DEFAULT_START_DATE);
+                  setEndDate(DEFAULT_END_DATE);
+                }}
+              >
+                重置
+              </Button>
+              <Button
+                variant="outline"
+                colorScheme="teal"
+                borderRadius="10px"
+                onClick={() => {
+                  setStartDate(selectedStartDate);
+                  setEndDate(selectedEndDate);
+                }}
+              >
+                查詢
+              </Button>
+            </Flex>
           </Flex>
 
           {/* 日誌表格 */}
@@ -133,29 +185,37 @@ export default function PlatformLogModal({
                 </Tr>
               </Thead>
               <Tbody>
-                {filteredLogs.map((log, index) => {
-                  // 分離日期和時間
-                  const [date, time] = log.operateTime.split(" ");
-                  return (
-                    <Tr
-                      key={log.id}
-                      bg={index % 2 === 0 ? "blackAlpha.50" : "transparent"}
-                    >
-                      <Td>{log.item}</Td>
-                      <Td color="gray.600" whiteSpace="pre-line">
-                        {log.beforeValue}
-                      </Td>
-                      <Td color="gray.600" whiteSpace="pre-line">
-                        {log.afterValue}
-                      </Td>
-                      <Td>{log.operator}</Td>
-                      <Td color="gray.600">
-                        <Box>{date}</Box>
-                        <Box>{time}</Box>
-                      </Td>
-                    </Tr>
-                  );
-                })}
+                {filteredLogs.length > 0 ? (
+                  filteredLogs.map((log, index) => {
+                    // 分離日期和時間
+                    const [date, time] = log.operateTime.split(" ");
+                    return (
+                      <Tr
+                        key={log.id}
+                        bg={index % 2 === 0 ? "blackAlpha.50" : "transparent"}
+                      >
+                        <Td>{log.item}</Td>
+                        <Td color="gray.600" whiteSpace="pre-line">
+                          {log.beforeValue}
+                        </Td>
+                        <Td color="gray.600" whiteSpace="pre-line">
+                          {log.afterValue}
+                        </Td>
+                        <Td>{log.operator}</Td>
+                        <Td color="gray.600">
+                          <Box>{date}</Box>
+                          <Box>{time}</Box>
+                        </Td>
+                      </Tr>
+                    );
+                  })
+                ) : (
+                  <Tr>
+                    <Td colSpan={5} textAlign="center" py={8} color="gray.500">
+                      查無紀錄
+                    </Td>
+                  </Tr>
+                )}
               </Tbody>
             </Table>
           </TableContainer>
