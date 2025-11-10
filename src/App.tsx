@@ -30,7 +30,10 @@ import {
   Divider,
   Collapse,
   Icon,
-} from "@chakra-ui/react"; // Box: 容器, VStack: 垂直堆疊, Button: 按鈕, Heading: 標題, Menu: 選單相關元件, Flex: 彈性佈局, Text: 文字, Avatar: 頭像, Card: 卡片, CardBody: 卡片內容, Divider: 分隔線, Collapse: 折疊元件, Icon: 圖示元件
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+} from "@chakra-ui/react"; // Box: 容器, VStack: 垂直堆疊, Button: 按鈕, Heading: 標題, Menu: 選單相關元件, Flex: 彈性佈局, Text: 文字, Avatar: 頭像, Card: 卡片, CardBody: 卡片內容, Divider: 分隔線, Collapse: 折疊元件, Icon: 圖示元件, Breadcrumb: 麵包屑, BreadcrumbItem: 麵包屑項目, BreadcrumbLink: 麵包屑連結
 
 // 服務層匯入
 import { authService } from "@/services/auth.service"; // 認證服務
@@ -85,6 +88,25 @@ export default function App() {
   // 選中狀態的顏色常數
   const ACTIVE_BG_COLOR = "rgba(255, 87, 34, 0.7)";
   const ACTIVE_BG_COLOR_HOVER = "rgba(255, 87, 34, 0.85)";
+
+  // 生成麵包屑路徑
+  const getBreadcrumbs = () => {
+    const breadcrumbs = [{ label: "首頁", path: "/" }];
+
+    // 如果不在首頁，查找當前路徑所屬的分類和頁面
+    if (location.pathname !== "/") {
+      for (const category of menuCategories) {
+        const route = category.routes.find((r) => r.path === location.pathname);
+        if (route) {
+          breadcrumbs.push({ label: category.label, path: "" }); // 分類不可點擊
+          breadcrumbs.push({ label: route.label, path: route.path });
+          break;
+        }
+      }
+    }
+
+    return breadcrumbs;
+  };
 
   // 元件掛載時從 localStorage 讀取使用者資訊
   useEffect(() => {
@@ -253,6 +275,33 @@ export default function App() {
         {/* 主內容區域 */}
         {/* flex="1": 佔據剩餘空間 */}
         <Box flex="1">
+          {/* 麵包屑導航 */}
+          <Breadcrumb
+            spacing="8px"
+            separator={<ChevronRightIcon color="gray.500" />}
+            mb={6}
+          >
+            {getBreadcrumbs().map((crumb, index) => {
+              const isLast = index === getBreadcrumbs().length - 1;
+              return (
+                <BreadcrumbItem key={index} isCurrentPage={isLast}>
+                  {crumb.path && !isLast ? (
+                    <BreadcrumbLink as={Link} to={crumb.path} color="gray.600">
+                      {crumb.label}
+                    </BreadcrumbLink>
+                  ) : (
+                    <Text
+                      color={isLast ? "gray.800" : "gray.600"}
+                      fontWeight={isLast ? "semibold" : "normal"}
+                    >
+                      {crumb.label}
+                    </Text>
+                  )}
+                </BreadcrumbItem>
+              );
+            })}
+          </Breadcrumb>
+
           {/* Outlet: React Router 提供的元件，用於渲染當前路由匹配的子路由元件 */}
           {/* 這裡會根據路由渲染 HomePage 或 WithdrawPlatformPage */}
           <Outlet />
