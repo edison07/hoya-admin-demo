@@ -75,4 +75,17 @@ export const authService = {
     // 若 token 存在（非空字串），返回 true；否則返回 false
     return !!localStorage.getItem("token");
   },
+
+  /**
+   * 取得使用者資訊
+   * 從 localStorage 讀取儲存的使用者資訊
+   *
+   * @returns User | null - 使用者物件，若不存在則返回 null
+   */
+  getUserInfo: () => {
+    // 從 localStorage 讀取使用者資訊
+    const userStr = localStorage.getItem("user");
+    // 若存在則解析 JSON，否則返回 null
+    return userStr ? JSON.parse(userStr) : null;
+  },
 };
