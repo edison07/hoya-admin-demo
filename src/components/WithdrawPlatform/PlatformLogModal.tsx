@@ -24,11 +24,13 @@ import {
   TableContainer,
   FormControl,
   FormLabel,
-  Input,
   Flex,
   Box,
   Button,
 } from "@chakra-ui/react";
+
+// 自定義元件匯入
+import DateRangePicker from "@/components/DateRangePicker";
 
 // 類型定義匯入
 import type { Platform, PlatformLog } from "@/types/platform";
@@ -99,25 +101,18 @@ export default function PlatformLogModal({
         <ModalBody pb={6} overflowY="auto" maxH="calc(80vh - 80px)">
           {/* 日期區間選擇器 */}
           <Flex gap={4} mb={4} align="flex-end">
-            <FormControl maxW="300px">
+            <FormControl w="230px">
               <FormLabel fontSize="sm" fontWeight="semibold">
                 操作時間
               </FormLabel>
-              <Flex gap={2} align="center">
-                <Input
-                  type="date"
-                  placeholder="開始日期"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                />
-                <Box>-</Box>
-                <Input
-                  type="date"
-                  placeholder="結束日期"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                />
-              </Flex>
+              <DateRangePicker
+                startDate={startDate}
+                endDate={endDate}
+                onChange={(dates) => {
+                  setStartDate(dates.startDate);
+                  setEndDate(dates.endDate);
+                }}
+              />
             </FormControl>
           </Flex>
 
