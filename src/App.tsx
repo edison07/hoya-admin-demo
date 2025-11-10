@@ -54,14 +54,37 @@ export default function App() {
   // 使用者資訊狀態
   const [user, setUser] = useState<User | null>(null);
 
-  // 系統管理選單展開狀態
-  const [isSystemOpen, setIsSystemOpen] = useState(false);
+  // 選單類別展開狀態
+  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
 
-  // 系統管理分類下的路徑清單
-  const systemRoutes = ["/withdraw-platform"];
+  // 選單分類定義
+  const menuCategories = [
+    {
+      id: "system",
+      label: "系統管理",
+      routes: [
+        { path: "/withdraw-platform", label: "提幣平台設置" },
+      ],
+    },
+  ];
 
-  // 判斷當前路徑是否在系統管理分類下
-  const isSystemRouteActive = systemRoutes.includes(location.pathname);
+  // 判斷當前路徑是否在某個分類下
+  const isRouteActiveInCategory = (categoryId: string) => {
+    const category = menuCategories.find((cat) => cat.id === categoryId);
+    return category?.routes.some((route) => route.path === location.pathname) || false;
+  };
+
+  // 切換分類展開/收合狀態
+  const toggleCategory = (categoryId: string) => {
+    setOpenCategories((prev) => ({
+      ...prev,
+      [categoryId]: !prev[categoryId],
+    }));
+  };
+
+  // 選中狀態的顏色常數
+  const ACTIVE_BG_COLOR = "rgba(255, 87, 34, 0.7)";
+  const ACTIVE_BG_COLOR_HOVER = "rgba(255, 87, 34, 0.85)";
 
   // 元件掛載時從 localStorage 讀取使用者資訊
   useEffect(() => {
@@ -143,73 +166,86 @@ export default function App() {
                 colorScheme="black"
                 variant="ghost"
                 justifyContent="flex-start"
-                bg={
-                  location.pathname === "/"
-                    ? "rgba(255, 87, 34, 0.7)"
-                    : "transparent"
-                }
+                bg={location.pathname === "/" ? ACTIVE_BG_COLOR : "transparent"}
                 color={location.pathname === "/" ? "white" : "inherit"}
                 _hover={{
                   bg:
                     location.pathname === "/"
-                      ? "rgba(255, 87, 34, 0.85)"
+                      ? ACTIVE_BG_COLOR_HOVER
                       : "gray.100",
                 }}
               >
                 首頁
               </Button>
 
-              {/* 系統管理可展開按鈕 */}
-              <Button
-                colorScheme="black"
-                variant="ghost"
-                justifyContent="flex-start"
-                onClick={() => setIsSystemOpen(!isSystemOpen)}
-                color={isSystemRouteActive ? "rgba(255, 87, 34, 0.7)" : "inherit"}
-                rightIcon={
-                  <Icon
-                    as={isSystemOpen ? ChevronDownIcon : ChevronRightIcon}
-                    color={
-                      isSystemRouteActive ? "rgba(255, 87, 34, 0.7)" : "inherit"
-                    }
-                  />
-                }
-              >
-                系統管理
-              </Button>
-
-              {/* 可折疊的子選單 */}
-              <Collapse in={isSystemOpen} animateOpacity>
-                <VStack align="stretch" spacing={1} pl={4}>
-                  {/* 提幣平台設置按鈕 */}
+              {/* 動態渲染選單分類 */}
+              {menuCategories.map((category) => (
+                <Box key={category.id}>
+                  {/* 分類按鈕 */}
                   <Button
-                    as={Link}
-                    to="/withdraw-platform"
                     colorScheme="black"
                     variant="ghost"
                     justifyContent="flex-start"
-                    size="sm"
-                    bg={
-                      location.pathname === "/withdraw-platform"
-                        ? "rgba(255, 87, 34, 0.7)"
-                        : "transparent"
-                    }
+                    onClick={() => toggleCategory(category.id)}
                     color={
-                      location.pathname === "/withdraw-platform"
-                        ? "white"
+                      isRouteActiveInCategory(category.id)
+                        ? ACTIVE_BG_COLOR
                         : "inherit"
                     }
-                    _hover={{
-                      bg:
-                        location.pathname === "/withdraw-platform"
-                          ? "rgba(255, 87, 34, 0.85)"
-                          : "gray.100",
-                    }}
+                    rightIcon={
+                      <Icon
+                        as={
+                          openCategories[category.id]
+                            ? ChevronDownIcon
+                            : ChevronRightIcon
+                        }
+                        color={
+                          isRouteActiveInCategory(category.id)
+                            ? ACTIVE_BG_COLOR
+                            : "inherit"
+                        }
+                      />
+                    }
                   >
-                    提幣平台設置
+                    {category.label}
                   </Button>
-                </VStack>
-              </Collapse>
+
+                  {/* 可折疊的子選單 */}
+                  <Collapse in={openCategories[category.id]} animateOpacity>
+                    <VStack align="stretch" spacing={1} pl={4}>
+                      {category.routes.map((route) => (
+                        <Button
+                          key={route.path}
+                          as={Link}
+                          to={route.path}
+                          colorScheme="black"
+                          variant="ghost"
+                          justifyContent="flex-start"
+                          size="sm"
+                          bg={
+                            location.pathname === route.path
+                              ? ACTIVE_BG_COLOR
+                              : "transparent"
+                          }
+                          color={
+                            location.pathname === route.path
+                              ? "white"
+                              : "inherit"
+                          }
+                          _hover={{
+                            bg:
+                              location.pathname === route.path
+                                ? ACTIVE_BG_COLOR_HOVER
+                                : "gray.100",
+                          }}
+                        >
+                          {route.label}
+                        </Button>
+                      ))}
+                    </VStack>
+                  </Collapse>
+                </Box>
+              ))}
             </VStack>
           </CardBody>
         </Card>
