@@ -209,14 +209,12 @@ export default function LoginPage() {
         {/* p: 內距 */}
         {/* borderRadius: 圓角 */}
         {/* boxShadow: 陰影效果 */}
-        {/* mt: 響應式上邊距 */}
         <Box
           maxW="md"
           bg="white"
           p={8}
           borderRadius="2xl"
           boxShadow="2xl"
-          mt={{ base: 0, md: "150px", lg: "80px" }}
         >
           {/* 標題區域 */}
           {/* spacing: 子元素間距 */}
