@@ -4,9 +4,14 @@ import { createRoot } from "react-dom/client"; // React 18 的根渲染 API
 
 // UI 元件庫匯入
 import { ChakraProvider } from "@chakra-ui/react"; // Chakra UI 主題提供者
+import theme from "@/theme"; // 匯入自訂主題
 
 // React Query 相關匯入
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"; // 資料獲取和快取庫
+
+// Redux 相關匯入
+import { Provider as ReduxProvider } from "react-redux"; // Redux Provider
+import { store } from "@/store"; // Redux Store
 
 // 路由相關匯入
 import { RouterProvider } from "react-router-dom"; // React Router 路由提供者
@@ -50,15 +55,18 @@ enableMocking().then(() => {
   createRoot(document.getElementById("root")!).render(
     // StrictMode: 啟用嚴格模式，幫助發現潛在問題
     <StrictMode>
-      {/* ChakraProvider: 提供 Chakra UI 主題和樣式系統 */}
-      {/* resetCSS={false}: 不使用 Chakra 的 CSS 重置，保留自訂樣式 */}
-      <ChakraProvider resetCSS={false}>
-        {/* QueryClientProvider: 提供 React Query 上下文，用於資料管理 */}
-        <QueryClientProvider client={queryClient}>
-          {/* RouterProvider: 提供路由功能，渲染路由配置 */}
-          <RouterProvider router={router} />
-        </QueryClientProvider>
-      </ChakraProvider>
+      {/* ReduxProvider: 提供 Redux Store，用於全域狀態管理 */}
+      <ReduxProvider store={store}>
+        {/* ChakraProvider: 提供 Chakra UI 主題和樣式系統 */}
+        {/* resetCSS={false}: 不使用 Chakra 的 CSS 重置，保留自訂樣式 */}
+        <ChakraProvider theme={theme} resetCSS={false}>
+          {/* QueryClientProvider: 提供 React Query 上下文，用於資料管理 */}
+          <QueryClientProvider client={queryClient}>
+            {/* RouterProvider: 提供路由功能，渲染路由配置 */}
+            <RouterProvider router={router} />
+          </QueryClientProvider>
+        </ChakraProvider>
+      </ReduxProvider>
     </StrictMode>,
   );
 });

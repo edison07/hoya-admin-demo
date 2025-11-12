@@ -21,6 +21,11 @@ export interface User {
   username: string; // 使用者名稱（登入用）
   name: string; // 使用者顯示名稱
   email: string; // 使用者電子郵件
+  permissions: {
+    // 使用者權限
+    canEdit: boolean; // 是否可以修改平台
+    canViewLog: boolean; // 是否可以查看日誌
+  };
 }
 
 /**
