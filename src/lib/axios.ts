@@ -4,7 +4,7 @@
  */
 
 // Axios 庫匯入
-import axios from "axios"; // Axios: 流行的 HTTP 客戶端庫
+import axios, { type AxiosError } from "axios"; // Axios: 流行的 HTTP 客戶端庫
 
 // Cookie 管理套件匯入
 import Cookies from "js-cookie";
@@ -41,7 +41,7 @@ api.interceptors.response.use(
   (response) => response, // 直接返回回應，不做修改
 
   // 錯誤回應處理器
-  (error) => {
+  (error: AxiosError) => {
     // 特殊處理：登入 API 的 401 錯誤
     // 對於登入 API 的 401 錯誤，不要重新導向，而是返回錯誤資料
     if (

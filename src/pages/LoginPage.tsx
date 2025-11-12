@@ -84,7 +84,7 @@ export default function LoginPage() {
         // 建立新的錯誤物件
         const newErrors: FormErrors = {};
         // 遍歷所有驗證錯誤
-        error.inner.forEach((err) => {
+        error.inner.forEach((err: ValidationError) => {
           // 如果錯誤有路徑（欄位名稱）
           if (err.path) {
             // 將錯誤訊息存入對應欄位
