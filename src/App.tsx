@@ -7,7 +7,7 @@
 import { useEffect, useState } from "react"; // useEffect: 副作用處理, useState: 狀態管理
 
 // Chakra UI 圖示匯入
-import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons"; // ChevronDownIcon: 下箭頭圖示, ChevronRightIcon: 右箭頭圖示
+import { ChevronDownIcon, ChevronRightIcon, HamburgerIcon } from "@chakra-ui/icons"; // ChevronDownIcon: 下箭頭圖示, ChevronRightIcon: 右箭頭圖示, HamburgerIcon: 漢堡選單圖示
 
 // React Router 相關匯入
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom"; // Outlet: 子路由渲染容器, Link: 路由連結, useNavigate: 程式化導覽, useLocation: 取得當前路徑
@@ -33,7 +33,15 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-} from "@chakra-ui/react"; // Box: 容器, VStack: 垂直堆疊, Button: 按鈕, Heading: 標題, Menu: 選單相關元件, Flex: 彈性佈局, Text: 文字, Avatar: 頭像, Card: 卡片, CardBody: 卡片內容, Divider: 分隔線, Collapse: 折疊元件, Icon: 圖示元件, Breadcrumb: 麵包屑, BreadcrumbItem: 麵包屑項目, BreadcrumbLink: 麵包屑連結
+  Drawer,
+  DrawerBody,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  IconButton,
+  useDisclosure,
+  useBreakpointValue,
+} from "@chakra-ui/react"; // Box: 容器, VStack: 垂直堆疊, Button: 按鈕, Heading: 標題, Menu: 選單相關元件, Flex: 彈性佈局, Text: 文字, Avatar: 頭像, Card: 卡片, CardBody: 卡片內容, Divider: 分隔線, Collapse: 折疊元件, Icon: 圖示元件, Breadcrumb: 麵包屑, BreadcrumbItem: 麵包屑項目, BreadcrumbLink: 麵包屑連結, Drawer: 抽屜元件, DrawerBody: 抽屜內容, DrawerOverlay: 抽屜遮罩, DrawerContent: 抽屜容器, DrawerCloseButton: 抽屜關閉按鈕, IconButton: 圖示按鈕, useDisclosure: 開關狀態 Hook, useBreakpointValue: 斷點值 Hook
 
 // 服務層匯入
 import { authService } from "@/services/auth.service"; // 認證服務
@@ -64,6 +72,12 @@ export default function App() {
 
   // 選單類別展開狀態
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
+
+  // 側邊欄 Drawer 開關狀態
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  // 判斷是否為小螢幕（寬度 < 1280px）
+  const isMobile = useBreakpointValue({ base: true, xl: false });
 
   // 選單分類定義
   const menuCategories = [
@@ -138,6 +152,117 @@ export default function App() {
   }, [dispatch]);
 
   /**
+   * 渲染側邊欄內容
+   * 可被桌面版和手機版共用
+   */
+  const renderSidebarContent = () => (
+    <VStack align="stretch" spacing={3}>
+      {/* 側邊欄標題 */}
+      <Heading size="md" mb={2}>
+        HOYA BIT Admin
+      </Heading>
+
+      {/* 分隔線 */}
+      <Divider />
+
+      {/* Overview 標籤 */}
+      <Text fontSize="sm" fontWeight="bold" color="gray.400" mt={2}>
+        OVERVIEW
+      </Text>
+
+      {/* 首頁按鈕 */}
+      <Button
+        as={Link}
+        to="/"
+        colorScheme="black"
+        variant="ghost"
+        justifyContent="flex-start"
+        bg={location.pathname === "/" ? ACTIVE_BG_COLOR : "transparent"}
+        color={location.pathname === "/" ? "white" : "inherit"}
+        _hover={{
+          bg:
+            location.pathname === "/"
+              ? ACTIVE_BG_COLOR_HOVER
+              : "gray.100",
+        }}
+        onClick={isMobile ? onClose : undefined}
+      >
+        首頁
+      </Button>
+
+      {/* 動態渲染選單分類 */}
+      {menuCategories.map((category) => (
+        <Box key={category.id}>
+          {/* 分類按鈕 */}
+          <Button
+            colorScheme="black"
+            variant="ghost"
+            justifyContent="flex-start"
+            onClick={() => toggleCategory(category.id)}
+            color={
+              isRouteActiveInCategory(category.id)
+                ? ACTIVE_BG_COLOR
+                : "inherit"
+            }
+            rightIcon={
+              <Icon
+                as={
+                  openCategories[category.id]
+                    ? ChevronDownIcon
+                    : ChevronRightIcon
+                }
+                color={
+                  isRouteActiveInCategory(category.id)
+                    ? ACTIVE_BG_COLOR
+                    : "inherit"
+                }
+              />
+            }
+          >
+            {category.label}
+          </Button>
+
+          {/* 可折疊的子選單 */}
+          <Collapse in={openCategories[category.id]} animateOpacity>
+            <VStack align="stretch" spacing={1} pl={4}>
+              {category.routes.map((route) => (
+                <Button
+                  key={route.path}
+                  as={Link}
+                  to={route.path}
+                  colorScheme="black"
+                  variant="ghost"
+                  justifyContent="flex-start"
+                  size="sm"
+                  bg={
+                    location.pathname === route.path
+                      ? ACTIVE_BG_COLOR
+                      : "transparent"
+                  }
+                  color={
+                    location.pathname === route.path
+                      ? "white"
+                      : "inherit"
+                  }
+                  _hover={{
+                    bg:
+                      location.pathname === route.path
+                        ? ACTIVE_BG_COLOR_HOVER
+                        : "gray.100",
+                  }}
+                  onClick={isMobile ? onClose : undefined}
+                >
+                  {route.label}
+                </Button>
+              ))}
+            </VStack>
+          </Collapse>
+        </Box>
+      ))}
+    </VStack>
+  );
+
+  /**
    * 處理使用者登出
    * 1. 使用 authService 清除認證資料
    * 2. 清除 Redux 使用者和權限狀態
@@ -158,7 +283,7 @@ export default function App() {
     // 主容器：使用 flexbox 佈局，最小高度為整個視窗高度
     <Box display="flex" minH="100vh" flexDirection="column" bg="#F7FAFC">
       {/* 頂部導覽列 */}
-      <Flex px={8} py={4} justify="flex-end" align="center">
+      <Flex px={8} py={4} justify="flex-end" align="center" gap={3}>
         {/* 使用者選單 */}
         <Menu>
           <MenuButton
@@ -183,122 +308,40 @@ export default function App() {
             </MenuItem>
           </MenuList>
         </Menu>
+
+        {/* 漢堡選單按鈕（小螢幕時顯示） */}
+        {isMobile && (
+          <IconButton
+            icon={<HamburgerIcon />}
+            onClick={onOpen}
+            variant="ghost"
+            aria-label="開啟選單"
+            size="md"
+          />
+        )}
       </Flex>
+
+      {/* 側邊欄 Drawer（小螢幕時使用） */}
+      <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
+        <DrawerOverlay />
+        <DrawerContent bg="transparent" boxShadow="none">
+          <DrawerBody pt={12} px={4}>
+            <Card position="relative">
+              <DrawerCloseButton position="absolute" top={2} right={2} />
+              <CardBody>{renderSidebarContent()}</CardBody>
+            </Card>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
 
       {/* 主要內容區（側邊欄 + 內容） */}
       <Box display="flex" flex="1" p={4} gap={4}>
-        {/* 側邊欄區域 - 使用卡片樣式 */}
-        <Card w="220px" h="fit-content">
-          <CardBody>
-            <VStack align="stretch" spacing={3}>
-              {/* 側邊欄標題 */}
-              <Heading size="md" mb={2}>
-                HOYA BIT Admin
-              </Heading>
-
-              {/* 分隔線 */}
-              <Divider />
-
-              {/* Overview 標籤 */}
-              <Text fontSize="sm" fontWeight="bold" color="gray.400" mt={2}>
-                OVERVIEW
-              </Text>
-
-              {/* 首頁按鈕 */}
-              {/* as={Link}: 將按鈕渲染為 React Router Link 元件 */}
-              {/* to: 導航目標路徑 */}
-              {/* colorScheme: 顏色主題 */}
-              {/* variant: 按鈕變體樣式 */}
-              {/* justifyContent: 靠左對齊 */}
-              <Button
-                as={Link}
-                to="/"
-                colorScheme="black"
-                variant="ghost"
-                justifyContent="flex-start"
-                bg={location.pathname === "/" ? ACTIVE_BG_COLOR : "transparent"}
-                color={location.pathname === "/" ? "white" : "inherit"}
-                _hover={{
-                  bg:
-                    location.pathname === "/"
-                      ? ACTIVE_BG_COLOR_HOVER
-                      : "gray.100",
-                }}
-              >
-                首頁
-              </Button>
-
-              {/* 動態渲染選單分類 */}
-              {menuCategories.map((category) => (
-                <Box key={category.id}>
-                  {/* 分類按鈕 */}
-                  <Button
-                    colorScheme="black"
-                    variant="ghost"
-                    justifyContent="flex-start"
-                    onClick={() => toggleCategory(category.id)}
-                    color={
-                      isRouteActiveInCategory(category.id)
-                        ? ACTIVE_BG_COLOR
-                        : "inherit"
-                    }
-                    rightIcon={
-                      <Icon
-                        as={
-                          openCategories[category.id]
-                            ? ChevronDownIcon
-                            : ChevronRightIcon
-                        }
-                        color={
-                          isRouteActiveInCategory(category.id)
-                            ? ACTIVE_BG_COLOR
-                            : "inherit"
-                        }
-                      />
-                    }
-                  >
-                    {category.label}
-                  </Button>
-
-                  {/* 可折疊的子選單 */}
-                  <Collapse in={openCategories[category.id]} animateOpacity>
-                    <VStack align="stretch" spacing={1} pl={4}>
-                      {category.routes.map((route) => (
-                        <Button
-                          key={route.path}
-                          as={Link}
-                          to={route.path}
-                          colorScheme="black"
-                          variant="ghost"
-                          justifyContent="flex-start"
-                          size="sm"
-                          bg={
-                            location.pathname === route.path
-                              ? ACTIVE_BG_COLOR
-                              : "transparent"
-                          }
-                          color={
-                            location.pathname === route.path
-                              ? "white"
-                              : "inherit"
-                          }
-                          _hover={{
-                            bg:
-                              location.pathname === route.path
-                                ? ACTIVE_BG_COLOR_HOVER
-                                : "gray.100",
-                          }}
-                        >
-                          {route.label}
-                        </Button>
-                      ))}
-                    </VStack>
-                  </Collapse>
-                </Box>
-              ))}
-            </VStack>
-          </CardBody>
-        </Card>
+        {/* 側邊欄區域 - 桌面版（寬度 >= 1280px 時顯示） */}
+        {!isMobile && (
+          <Card w="220px" h="fit-content">
+            <CardBody>{renderSidebarContent()}</CardBody>
+          </Card>
+        )}
 
         {/* 主內容區域 */}
         {/* flex="1": 佔據剩餘空間 */}
