@@ -4,13 +4,20 @@
  */
 
 // React 核心匯入
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 
 // Chakra UI 元件匯入
-import { Box, useDisclosure } from "@chakra-ui/react";
+import { Box, useDisclosure, useToast } from "@chakra-ui/react";
 
 // 類型定義匯入
 import type { Platform } from "@/types/platform";
+
+// React Query hooks 匯入
+import {
+  usePlatforms,
+  useUpdatePlatform,
+  usePlatformLogs,
+} from "@/hooks/usePlatform";
 
 // 元件匯入
 import EditPlatformModal from "@/components/WithdrawPlatform/EditPlatformModal";
@@ -19,13 +26,7 @@ import PlatformSearchFilters, {
   type SearchFilters,
 } from "@/components/WithdrawPlatform/PlatformSearchFilters";
 import PlatformLogModal from "@/components/WithdrawPlatform/PlatformLogModal";
-
-// Mock 資料匯入
-import { mockPlatforms } from "@/mocks/platformData";
-import { mockPlatformLogs } from "@/mocks/platformLogData";
-
-// 工具函數匯入
-import { formatDateTime } from "@/utils/dateUtils";
+import { Loading } from "@/components/Loading";
 
 /**
  * 提幣平台設置頁面元件
@@ -34,6 +35,9 @@ import { formatDateTime } from "@/utils/dateUtils";
  * @returns JSX.Element - 提幣平台設置頁面 UI
  */
 export default function WithdrawPlatformPage() {
+  // Toast 通知
+  const toast = useToast();
+
   // 編輯 Modal 控制
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [editingPlatform, setEditingPlatform] = useState<Platform | null>(null);
@@ -46,47 +50,65 @@ export default function WithdrawPlatformPage() {
   } = useDisclosure();
   const [logPlatform, setLogPlatform] = useState<Platform | null>(null);
 
-  // 平台資料（使用 useState 管理，以便更新）
-  const [mockData, setMockData] = useState<Platform[]>(mockPlatforms);
+  // 篩選條件狀態
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>({
+    platformName: "all",
+    withdrawEnabled: "all",
+    updateTime: "",
+  });
 
-  // 篩選後的資料
-  const [filteredData, setFilteredData] = useState(mockData);
+  // 使用 React Query 取得平台列表
+  const { data: platforms = [], isLoading, error } = usePlatforms();
 
-  // 同步初始資料
-  useEffect(() => {
-    setFilteredData(mockData);
-  }, [mockData]);
+  // 使用 React Query 更新平台
+  const updatePlatformMutation = useUpdatePlatform();
 
-  // 處理搜尋
-  const handleSearch = (filters: SearchFilters) => {
-    let result = mockData;
+  // 使用 React Query 取得平台日誌（僅在 Modal 開啟時查詢）
+  const {
+    data: platformLogs = [],
+    isLoading: isLogsLoading,
+    error: logsError,
+  } = usePlatformLogs(logPlatform?.id || 0, isLogOpen && !!logPlatform);
+
+  // 使用 useMemo 進行客戶端篩選
+  const filteredData = useMemo(() => {
+    let result = platforms;
 
     // 根據平台名稱篩選
-    if (filters.platformName !== "all") {
+    if (searchFilters.platformName !== "all") {
       result = result.filter(
-        (item) => item.platformName === filters.platformName
+        (item) => item.platformName === searchFilters.platformName
       );
     }
 
     // 根據提幣功能篩選
-    if (filters.withdrawEnabled !== "all") {
-      const isEnabled = filters.withdrawEnabled === "enabled";
+    if (searchFilters.withdrawEnabled !== "all") {
+      const isEnabled = searchFilters.withdrawEnabled === "enabled";
       result = result.filter((item) => item.withdrawEnabled === isEnabled);
     }
 
-    // 根據更新時間篩選（如果有輸入日期）
-    if (filters.updateTime) {
+    // 根據更新時間篩選
+    if (searchFilters.updateTime) {
       result = result.filter((item) =>
-        item.updateTime.startsWith(filters.updateTime)
+        item.updateTime.startsWith(searchFilters.updateTime)
       );
     }
 
-    setFilteredData(result);
+    return result;
+  }, [platforms, searchFilters]);
+
+  // 處理搜尋
+  const handleSearch = (filters: SearchFilters) => {
+    setSearchFilters(filters);
   };
 
   // 處理重置
   const handleReset = () => {
-    setFilteredData(mockData);
+    setSearchFilters({
+      platformName: "all",
+      withdrawEnabled: "all",
+      updateTime: "",
+    });
   };
 
   // 打開編輯 Modal
@@ -96,44 +118,43 @@ export default function WithdrawPlatformPage() {
   };
 
   // 確定修改
-  const handleConfirmEdit = (data: {
+  const handleConfirmEdit = async (data: {
     withdrawEnabled: boolean;
     remark: string;
   }) => {
     if (!editingPlatform) return;
 
-    // 生成當前時間字串
-    const updateTime = formatDateTime();
-
-    // 更新 mockData
-    const updatedMockData = mockData.map((platform) =>
-      platform.id === editingPlatform.id
-        ? {
-            ...platform,
-            withdrawEnabled: data.withdrawEnabled,
-            remark: data.remark,
-            updateTime: updateTime,
-          }
-        : platform,
+    updatePlatformMutation.mutate(
+      {
+        id: editingPlatform.id,
+        withdrawEnabled: data.withdrawEnabled,
+        remark: data.remark,
+      },
+      {
+        onSuccess: (response) => {
+          toast({
+            title: "更新成功",
+            description: response.message || "平台設定已更新",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
+          setEditingPlatform(null);
+          onClose();
+        },
+        onError: (error: Error) => {
+          toast({
+            title: "更新失敗",
+            description: error.message || "無法更新平台設定",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
+        },
+      }
     );
-    setMockData(updatedMockData);
-
-    // 同時更新 filteredData 以立即反映變更
-    const updatedFilteredData = filteredData.map((platform) =>
-      platform.id === editingPlatform.id
-        ? {
-            ...platform,
-            withdrawEnabled: data.withdrawEnabled,
-            remark: data.remark,
-            updateTime: updateTime,
-          }
-        : platform,
-    );
-    setFilteredData(updatedFilteredData);
-
-    // 重置 editingPlatform 並關閉 Modal
-    setEditingPlatform(null);
-    onClose();
   };
 
   // 取消修改
@@ -154,11 +175,25 @@ export default function WithdrawPlatformPage() {
     onLogClose();
   };
 
+  // 錯誤處理
+  if (error) {
+    return (
+      <Box p={6} textAlign="center" color="red.500">
+        載入平台資料時發生錯誤：{error.message}
+      </Box>
+    );
+  }
+
+  // 載入中顯示
+  if (isLoading) {
+    return <Loading size="lg" fullScreen message="載入平台資料中..." />;
+  }
+
   return (
     <Box>
       {/* 搜尋/篩選區域 */}
       <PlatformSearchFilters
-        platforms={mockData}
+        platforms={platforms}
         onSearch={handleSearch}
         onReset={handleReset}
       />
@@ -176,14 +211,17 @@ export default function WithdrawPlatformPage() {
         platform={editingPlatform}
         onClose={handleCancelEdit}
         onConfirm={handleConfirmEdit}
+        isLoading={updatePlatformMutation.isPending}
       />
 
       {/* 日誌 Modal */}
       <PlatformLogModal
         isOpen={isLogOpen}
         platform={logPlatform}
-        logs={mockPlatformLogs}
+        logs={platformLogs}
         onClose={handleCloseLog}
+        isLoading={isLogsLoading}
+        error={logsError}
       />
     </Box>
   );

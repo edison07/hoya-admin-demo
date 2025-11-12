@@ -27,6 +27,8 @@ import {
   Flex,
   Box,
   Button,
+  Spinner,
+  Text,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 
@@ -44,6 +46,8 @@ interface PlatformLogModalProps {
   platform: Platform | null; // 要查看日誌的平台資料
   logs: PlatformLog[]; // 日誌資料列表
   onClose: () => void; // 關閉 Modal 的回調
+  isLoading?: boolean; // 是否正在載入日誌
+  error?: Error | null; // 載入日誌時的錯誤
 }
 
 /**
@@ -58,6 +62,8 @@ export default function PlatformLogModal({
   platform,
   logs,
   onClose,
+  isLoading = false,
+  error = null,
 }: PlatformLogModalProps) {
   // 預設日期範圍
   const DEFAULT_START_DATE = "2022-10-14";
@@ -185,7 +191,22 @@ export default function PlatformLogModal({
                 </Tr>
               </Thead>
               <Tbody>
-                {filteredLogs.length > 0 ? (
+                {isLoading ? (
+                  <Tr>
+                    <Td colSpan={5} textAlign="center" py={8}>
+                      <Flex justify="center" align="center" gap={2}>
+                        <Spinner size="sm" color="teal.500" />
+                        <Text color="gray.600">載入日誌中...</Text>
+                      </Flex>
+                    </Td>
+                  </Tr>
+                ) : error ? (
+                  <Tr>
+                    <Td colSpan={5} textAlign="center" py={8} color="red.500">
+                      載入日誌時發生錯誤：{error.message}
+                    </Td>
+                  </Tr>
+                ) : filteredLogs.length > 0 ? (
                   filteredLogs.map((log, index) => {
                     // 分離日期和時間
                     const [date, time] = log.operateTime.split(" ");

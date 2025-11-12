@@ -39,6 +39,7 @@ interface EditPlatformModalProps {
     withdrawEnabled: boolean;
     remark: string;
   }) => void; // 確定修改的回調
+  isLoading?: boolean; // 是否正在載入（更新中）
 }
 
 /**
@@ -53,6 +54,7 @@ export default function EditPlatformModal({
   platform,
   onClose,
   onConfirm,
+  isLoading = false,
 }: EditPlatformModalProps) {
   // 編輯表單狀態
   const [editWithdrawEnabled, setEditWithdrawEnabled] = useState(false);
@@ -151,10 +153,16 @@ export default function EditPlatformModal({
             colorScheme="teal"
             mr={3}
             onClick={handleCancel}
+            isDisabled={isLoading}
           >
             取消
           </Button>
-          <Button colorScheme="teal" onClick={handleConfirm}>
+          <Button
+            colorScheme="teal"
+            onClick={handleConfirm}
+            isLoading={isLoading}
+            loadingText="更新中..."
+          >
             確定
           </Button>
         </ModalFooter>

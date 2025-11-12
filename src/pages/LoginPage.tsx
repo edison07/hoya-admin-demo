@@ -50,7 +50,6 @@ export default function LoginPage() {
   const [username, setUsername] = useState(""); // 使用者名稱輸入值
   const [password, setPassword] = useState(""); // 密碼輸入值
   const [errors, setErrors] = useState<FormErrors>({}); // 表單驗證錯誤訊息
-  const [showPassword, setShowPassword] = useState(false); // 密碼顯示/隱藏狀態
 
   // === Hooks ===
   const loginMutation = useLogin(); // 登入 API mutation hook
