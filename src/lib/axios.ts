@@ -6,6 +6,9 @@
 // Axios 庫匯入
 import axios from "axios"; // Axios: 流行的 HTTP 客戶端庫
 
+// Cookie 管理套件匯入
+import Cookies from "js-cookie";
+
 /**
  * 建立 Axios 實例
  * 預設配置包含 baseURL 和 timeout
@@ -21,10 +24,11 @@ export const api = axios.create({
  * 在每個請求發送前執行，可用於添加認證 Token 等
  */
 api.interceptors.request.use((config) => {
-  // 可在這裡附加 token 到請求標頭
-  // 以下程式碼已註解，需要時可取消註解
-  const token = localStorage.getItem("token"); // 從 localStorage 取得 token
-  if (token) config.headers.Authorization = `Bearer ${token}`; // 將 token 加到 Authorization 標頭
+  // 從 Cookie 取得認證 token（與 authService 保持一致）
+  const token = Cookies.get("auth_token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`; // 將 token 加到 Authorization 標頭
+  }
   return config; // 返回修改後的配置
 });
 
@@ -51,10 +55,8 @@ api.interceptors.response.use(
     // 其他 401 錯誤統一處理
     // 401 Unauthorized 通常表示未認證或 Token 過期
     if (error.response?.status === 401) {
-      // 輸出錯誤訊息到控制台
-      console.error("Unauthorized, redirecting...");
-      // 可選：重新導向到登入頁面（目前已註解）
-      // window.location.href = "/login";
+      // 重新導向到登入頁面
+      window.location.href = "/login";
     }
 
     // 拒絕 Promise，讓呼叫方可以捕獲錯誤

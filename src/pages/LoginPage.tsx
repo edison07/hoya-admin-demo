@@ -26,6 +26,7 @@ import { FormInput } from "@/components/FormInput"; // 表單輸入元件
 // 驗證和類型相關匯入
 import { loginSchema } from "@/schemas/auth.schema"; // Yup 驗證 schema
 import { ValidationError } from "yup"; // Yup 驗證錯誤類型
+import type { AxiosError } from "axios"; // Axios 錯誤類型
 
 // 靜態資源匯入
 import logo from "@/assets/logo.png"; // 應用程式 Logo
@@ -37,6 +38,14 @@ import logo from "@/assets/logo.png"; // 應用程式 Logo
 interface FormErrors {
   username?: string; // 使用者名稱錯誤訊息（可選）
   password?: string; // 密碼錯誤訊息（可選）
+}
+
+/**
+ * API 錯誤回應的介面定義
+ * 定義後端 API 錯誤回應的資料結構
+ */
+interface ErrorResponse {
+  message?: string; // 錯誤訊息（可選）
 }
 
 /**
@@ -151,9 +160,12 @@ export default function LoginPage() {
           isClosable: true,
         });
       }
-    } catch (error: any) {
+    } catch (error) {
       // 捕獲網路錯誤或其他異常
-      const message = error?.response?.data?.message || "登入失敗，請稍後再試";
+      // 使用 AxiosError 型別來獲得更好的型別安全
+      const axiosError = error as AxiosError<ErrorResponse>;
+      const message =
+        axiosError.response?.data?.message || "登入失敗，請稍後再試";
       toast({
         title: "登入失敗",
         description: message,
