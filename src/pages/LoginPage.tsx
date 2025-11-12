@@ -4,7 +4,7 @@
  */
 
 // React 核心 Hooks
-import { useState } from "react"; // 狀態管理 Hook
+import { useState, useCallback } from "react"; // useState: 狀態管理, useCallback: 函式記憶化
 
 // Chakra UI 元件匯入
 import {
@@ -26,6 +26,7 @@ import { FormInput } from "@/components/FormInput"; // 表單輸入元件
 // 驗證和類型相關匯入
 import { loginSchema } from "@/schemas/auth.schema"; // Yup 驗證 schema
 import { ValidationError } from "yup"; // Yup 驗證錯誤類型
+import type { AxiosError } from "axios"; // Axios 錯誤類型
 
 // 靜態資源匯入
 import logo from "@/assets/logo.png"; // 應用程式 Logo
@@ -37,6 +38,14 @@ import logo from "@/assets/logo.png"; // 應用程式 Logo
 interface FormErrors {
   username?: string; // 使用者名稱錯誤訊息（可選）
   password?: string; // 密碼錯誤訊息（可選）
+}
+
+/**
+ * API 錯誤回應的介面定義
+ * 定義後端 API 錯誤回應的資料結構
+ */
+interface ErrorResponse {
+  message?: string; // 錯誤訊息（可選）
 }
 
 /**
@@ -54,6 +63,10 @@ export default function LoginPage() {
   // === Hooks ===
   const loginMutation = useLogin(); // 登入 API mutation hook
   const toast = useToast(); // Toast 通知 hook
+
+  // Toast 持續時間常數
+  const TOAST_SUCCESS_DURATION = 2000;
+  const TOAST_ERROR_DURATION = 3000;
 
   /**
    * 驗證整個表單
@@ -75,7 +88,7 @@ export default function LoginPage() {
         // 建立新的錯誤物件
         const newErrors: FormErrors = {};
         // 遍歷所有驗證錯誤
-        error.inner.forEach((err) => {
+        error.inner.forEach((err: ValidationError) => {
           // 如果錯誤有路徑（欄位名稱）
           if (err.path) {
             // 將錯誤訊息存入對應欄位
@@ -109,6 +122,10 @@ export default function LoginPage() {
     }
   };
 
+  // 使用 useCallback 記憶化 onBlur 處理函式
+  const handleUsernameBlur = useCallback(() => handleBlur("username"), [handleBlur]);
+  const handlePasswordBlur = useCallback(() => handleBlur("password"), [handleBlur]);
+
   /**
    * 處理表單提交
    * 1. 驗證表單資料
@@ -138,7 +155,7 @@ export default function LoginPage() {
         toast({
           title: "登入成功",
           status: "success",
-          duration: 2000, // 顯示 2 秒
+          duration: TOAST_SUCCESS_DURATION, // 顯示 2 秒
           isClosable: true, // 可手動關閉
         });
       } else {
@@ -147,18 +164,21 @@ export default function LoginPage() {
           title: "登入失敗",
           description: result.message || "帳號或密碼錯誤",
           status: "error",
-          duration: 3000, // 顯示 3 秒
+          duration: TOAST_ERROR_DURATION, // 顯示 3 秒
           isClosable: true,
         });
       }
-    } catch (error: any) {
+    } catch (error) {
       // 捕獲網路錯誤或其他異常
-      const message = error?.response?.data?.message || "登入失敗，請稍後再試";
+      // 使用 AxiosError 型別來獲得更好的型別安全
+      const axiosError = error as AxiosError<ErrorResponse>;
+      const message =
+        axiosError.response?.data?.message || "登入失敗，請稍後再試";
       toast({
         title: "登入失敗",
         description: message,
         status: "error",
-        duration: 3000,
+        duration: TOAST_ERROR_DURATION,
         isClosable: true,
       });
     }
@@ -209,21 +229,19 @@ export default function LoginPage() {
         {/* p: 內距 */}
         {/* borderRadius: 圓角 */}
         {/* boxShadow: 陰影效果 */}
-        {/* mt: 響應式上邊距 */}
         <Box
           maxW="md"
           bg="white"
           p={8}
           borderRadius="2xl"
           boxShadow="2xl"
-          mt={{ base: 0, md: "150px", lg: "80px" }}
         >
           {/* 標題區域 */}
           {/* spacing: 子元素間距 */}
           {/* mb: 下邊距 */}
           <VStack spacing={4} mb={8}>
             {/* 應用程式標題 */}
-            <Heading size="xl" color="#FF5722">
+            <Heading size="xl" color="brand.primary">
               HOYA BIT Admin
             </Heading>
             {/* 提示文字 */}
@@ -251,7 +269,7 @@ export default function LoginPage() {
                 type="text"
                 value={username}
                 onChange={handleUsernameChange}
-                onBlur={() => handleBlur("username")}
+                onBlur={handleUsernameBlur}
                 error={errors.username}
                 disabled={loginMutation.isPending}
                 autoComplete="username"
@@ -265,7 +283,7 @@ export default function LoginPage() {
                 type="password"
                 value={password}
                 onChange={handlePasswordChange}
-                onBlur={() => handleBlur("password")}
+                onBlur={handlePasswordBlur}
                 error={errors.password}
                 disabled={loginMutation.isPending}
                 autoComplete="current-password"
@@ -283,12 +301,12 @@ export default function LoginPage() {
               <Button
                 type="submit"
                 colorScheme="orange"
-                bg="#FF5722"
+                bg="brand.primary"
                 w="full"
                 isLoading={loginMutation.isPending}
                 loadingText="登入中"
                 spinner={<Spinner size="sm" />}
-                _hover={{ bg: "#E64A19" }}
+                _hover={{ bg: "brand.hover" }}
               >
                 登入
               </Button>

@@ -21,6 +21,16 @@ import { authService } from "@/services/auth.service"; // 認證服務
 import type { LoginRequest } from "@/types/auth"; // 登入請求類型
 
 /**
+ * React Router Location State 類型定義
+ * 定義從 ProtectedRoute 傳遞過來的 state 結構
+ */
+interface LocationState {
+  from?: {
+    pathname: string; // 使用者原本想訪問的路徑
+  };
+}
+
+/**
  * useLogin Hook
  * 提供登入功能，包含以下步驟：
  * 1. 呼叫登入 API
@@ -74,7 +84,7 @@ export const useLogin = () => {
 
         // 取得使用者原本想訪問的頁面（從 location.state.from 讀取）
         // 如果沒有，則導航到首頁
-        const from = (location.state as any)?.from?.pathname || "/";
+        const from = (location.state as LocationState)?.from?.pathname || "/";
 
         // 導航到目標頁面，replace: true 表示替換當前歷史記錄
         navigate(from, { replace: true });

@@ -8,6 +8,15 @@ const config: ThemeConfig = {
 };
 
 // 2. 使用 extendTheme 來擴展預設主題，並傳入我們的設定
-const theme = extendTheme({ config });
+const theme = extendTheme({
+  config,
+  colors: {
+    brand: {
+      primary: "#FF5722",
+      hover: "#E64A19",
+      link: "#FF6E33",
+    },
+  },
+});
 
 export default theme;

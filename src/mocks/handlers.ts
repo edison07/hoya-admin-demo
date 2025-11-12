@@ -196,7 +196,7 @@ export const handlers = [
     const logs = mockPlatformLogs
       .filter((log) => log.platformId === platformId)
       .sort(
-        (a, b) =>
+        (a: PlatformLog, b: PlatformLog) =>
           new Date(b.operateTime).getTime() - new Date(a.operateTime).getTime()
       );
 
