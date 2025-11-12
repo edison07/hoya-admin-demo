@@ -91,21 +91,24 @@ export default function App() {
 
   // 生成麵包屑路徑
   const getBreadcrumbs = () => {
-    const breadcrumbs = [{ label: "首頁", path: "/" }];
+    // 如果在首頁，只顯示首頁
+    if (location.pathname === "/") {
+      return [{ label: "首頁", path: "/" }];
+    }
 
     // 如果不在首頁，查找當前路徑所屬的分類和頁面
-    if (location.pathname !== "/") {
-      for (const category of menuCategories) {
-        const route = category.routes.find((r) => r.path === location.pathname);
-        if (route) {
-          breadcrumbs.push({ label: category.label, path: "" }); // 分類不可點擊
-          breadcrumbs.push({ label: route.label, path: route.path });
-          break;
-        }
+    for (const category of menuCategories) {
+      const route = category.routes.find((r) => r.path === location.pathname);
+      if (route) {
+        return [
+          { label: category.label, path: "" }, // 分類不可點擊
+          { label: route.label, path: route.path },
+        ];
       }
     }
 
-    return breadcrumbs;
+    // 如果找不到匹配的路徑，回傳空陣列
+    return [];
   };
 
   // 元件掛載時從 localStorage 讀取使用者資訊
