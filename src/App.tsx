@@ -39,11 +39,9 @@ import {
 import { authService } from "@/services/auth.service"; // 認證服務
 
 // Redux 相關匯入
-import { useAppDispatch } from "@/store/hooks"; // Redux dispatch hook
+import { useAppDispatch, useAppSelector } from "@/store/hooks"; // Redux hooks
 import { setPermissions, resetPermissions } from "@/store/slices/permissionSlice"; // 權限 actions
-
-// 類型定義匯入
-import type { User } from "@/types/auth"; // 使用者類型
+import { setUser, clearUser } from "@/store/slices/userSlice"; // 使用者 actions
 
 /**
  * App 主元件
@@ -61,8 +59,8 @@ export default function App() {
   // 取得 Redux dispatch 函式
   const dispatch = useAppDispatch();
 
-  // 使用者資訊狀態
-  const [user, setUser] = useState<User | null>(null);
+  // 從 Redux 讀取使用者資訊
+  const user = useAppSelector((state) => state.user.user);
 
   // 選單類別展開狀態
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
@@ -121,28 +119,35 @@ export default function App() {
   // 元件掛載時從 localStorage 讀取使用者資訊
   useEffect(() => {
     const userInfo = authService.getUserInfo();
-    setUser(userInfo);
 
-    // 如果有使用者資訊且包含權限，則恢復 Redux 權限狀態
-    if (userInfo?.permissions) {
-      dispatch(
-        setPermissions({
-          canEdit: userInfo.permissions.canEdit,
-          canViewLog: userInfo.permissions.canViewLog,
-        }),
-      );
+    // 如果有使用者資訊，恢復 Redux 狀態
+    if (userInfo) {
+      // 恢復使用者資訊
+      dispatch(setUser(userInfo));
+
+      // 恢復權限狀態
+      if (userInfo.permissions) {
+        dispatch(
+          setPermissions({
+            canEdit: userInfo.permissions.canEdit,
+            canViewLog: userInfo.permissions.canViewLog,
+          }),
+        );
+      }
     }
   }, [dispatch]);
 
   /**
    * 處理使用者登出
    * 1. 使用 authService 清除認證資料
-   * 2. 清除 Redux 權限狀態
+   * 2. 清除 Redux 使用者和權限狀態
    * 3. 導航至登入頁面
    */
   const handleLogout = () => {
     // 使用 authService 的 logout 方法清除 token 和使用者資訊
     authService.logout();
+    // 清除 Redux 使用者狀態
+    dispatch(clearUser());
     // 清除 Redux 權限狀態
     dispatch(resetPermissions());
     // 重新導向到登入頁面

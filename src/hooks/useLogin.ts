@@ -12,6 +12,7 @@ import { useNavigate, useLocation } from "react-router-dom"; // useNavigate: 程
 // Redux 相關匯入
 import { useAppDispatch } from "@/store/hooks"; // Redux dispatch hook
 import { setPermissions } from "@/store/slices/permissionSlice"; // 設定權限 action
+import { setUser } from "@/store/slices/userSlice"; // 設定使用者 action
 
 // 服務層匯入
 import { authService } from "@/services/auth.service"; // 認證服務
@@ -59,6 +60,9 @@ export const useLogin = () => {
 
         // 將使用者資訊序列化後儲存到 localStorage
         localStorage.setItem("user", JSON.stringify(data.data.user));
+
+        // 將使用者資訊儲存到 Redux
+        dispatch(setUser(data.data.user));
 
         // 將使用者權限儲存到 Redux
         dispatch(
