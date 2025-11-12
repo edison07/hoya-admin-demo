@@ -43,7 +43,7 @@ export const handlers = [
 
     // 模擬驗證邏輯：檢查使用者名稱和密碼是否正確
     if (body.username === "admin" && body.password === "Admin123") {
-      // 登入成功：返回 Token 和使用者資訊
+      // 管理員帳號：完整權限
       return HttpResponse.json({
         success: true, // 成功標誌
         data: {
@@ -53,9 +53,55 @@ export const handlers = [
             username: "admin", // 使用者名稱
             name: "管理員", // 顯示名稱
             email: "admin@example.com", // 電子郵件
+            permissions: {
+              canEdit: true, // 可以修改平台
+              canViewLog: true, // 可以查看日誌
+            },
           },
         },
         message: "登入成功", // 成功訊息
+      });
+    }
+
+    // 一般使用者：僅查看日誌權限
+    if (body.username === "user" && body.password === "User123") {
+      return HttpResponse.json({
+        success: true,
+        data: {
+          token: "mock-jwt-token-" + Date.now(),
+          user: {
+            id: 2,
+            username: "user",
+            name: "一般使用者",
+            email: "user@example.com",
+            permissions: {
+              canEdit: false, // 不可修改平台
+              canViewLog: true, // 可以查看日誌
+            },
+          },
+        },
+        message: "登入成功",
+      });
+    }
+
+    // 訪客帳號：無權限
+    if (body.username === "guest" && body.password === "Guest123") {
+      return HttpResponse.json({
+        success: true,
+        data: {
+          token: "mock-jwt-token-" + Date.now(),
+          user: {
+            id: 3,
+            username: "guest",
+            name: "訪客",
+            email: "guest@example.com",
+            permissions: {
+              canEdit: false, // 不可修改平台
+              canViewLog: false, // 不可查看日誌
+            },
+          },
+        },
+        message: "登入成功",
       });
     }
 

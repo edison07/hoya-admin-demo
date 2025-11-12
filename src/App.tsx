@@ -38,6 +38,10 @@ import {
 // 服務層匯入
 import { authService } from "@/services/auth.service"; // 認證服務
 
+// Redux 相關匯入
+import { useAppDispatch } from "@/store/hooks"; // Redux dispatch hook
+import { setPermissions, resetPermissions } from "@/store/slices/permissionSlice"; // 權限 actions
+
 // 類型定義匯入
 import type { User } from "@/types/auth"; // 使用者類型
 
@@ -53,6 +57,9 @@ export default function App() {
 
   // 取得當前路徑
   const location = useLocation();
+
+  // 取得 Redux dispatch 函式
+  const dispatch = useAppDispatch();
 
   // 使用者資訊狀態
   const [user, setUser] = useState<User | null>(null);
@@ -115,16 +122,29 @@ export default function App() {
   useEffect(() => {
     const userInfo = authService.getUserInfo();
     setUser(userInfo);
-  }, []);
+
+    // 如果有使用者資訊且包含權限，則恢復 Redux 權限狀態
+    if (userInfo?.permissions) {
+      dispatch(
+        setPermissions({
+          canEdit: userInfo.permissions.canEdit,
+          canViewLog: userInfo.permissions.canViewLog,
+        }),
+      );
+    }
+  }, [dispatch]);
 
   /**
    * 處理使用者登出
    * 1. 使用 authService 清除認證資料
-   * 2. 導航至登入頁面
+   * 2. 清除 Redux 權限狀態
+   * 3. 導航至登入頁面
    */
   const handleLogout = () => {
     // 使用 authService 的 logout 方法清除 token 和使用者資訊
     authService.logout();
+    // 清除 Redux 權限狀態
+    dispatch(resetPermissions());
     // 重新導向到登入頁面
     navigate("/login");
   };

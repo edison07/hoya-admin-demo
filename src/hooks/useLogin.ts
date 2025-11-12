@@ -9,6 +9,10 @@ import { useMutation } from "@tanstack/react-query"; // useMutation: 處理變�
 // React Router 相關匯入
 import { useNavigate, useLocation } from "react-router-dom"; // useNavigate: 程式化導航 Hook, useLocation: 取得當前位置
 
+// Redux 相關匯入
+import { useAppDispatch } from "@/store/hooks"; // Redux dispatch hook
+import { setPermissions } from "@/store/slices/permissionSlice"; // 設定權限 action
+
 // 服務層匯入
 import { authService } from "@/services/auth.service"; // 認證服務
 
@@ -36,6 +40,9 @@ export const useLogin = () => {
   // 取得當前位置（用於獲取從哪裡被重新導向過來的）
   const location = useLocation();
 
+  // 取得 Redux dispatch 函式
+  const dispatch = useAppDispatch();
+
   // 返回 React Query mutation
   return useMutation({
     // mutationFn: 定義 mutation 要執行的函式
@@ -52,6 +59,14 @@ export const useLogin = () => {
 
         // 將使用者資訊序列化後儲存到 localStorage
         localStorage.setItem("user", JSON.stringify(data.data.user));
+
+        // 將使用者權限儲存到 Redux
+        dispatch(
+          setPermissions({
+            canEdit: data.data.user.permissions.canEdit,
+            canViewLog: data.data.user.permissions.canViewLog,
+          }),
+        );
 
         // 取得使用者原本想訪問的頁面（從 location.state.from 讀取）
         // 如果沒有，則導航到首頁

@@ -20,6 +20,9 @@ import {
   Flex,
 } from "@chakra-ui/react";
 
+// 權限控制元件匯入
+import PermsWrapper from "@/components/PermsWrapper";
+
 // 類型定義匯入
 import type { Platform } from "@/types/platform";
 
@@ -80,27 +83,40 @@ export default function PlatformTable({
                     <Td color="gray.600">{platform.updateTime}</Td>
                     <Td>
                       <Flex gap={2} align="center">
-                        <Button
-                          size="sm"
-                          variant="link"
-                          color="#FF6E33"
-                          onClick={() => onEdit(platform)}
-                        >
-                          修改
-                        </Button>
-                        <Divider
-                          orientation="vertical"
-                          h="16px"
-                          borderColor="gray.300"
-                        />
-                        <Button
-                          size="sm"
-                          variant="link"
-                          color="#FF6E33"
-                          onClick={() => onViewLog?.(platform)}
-                        >
-                          日誌
-                        </Button>
+                        {/* 使用 PermsWrapper 控制修改按鈕的顯示 */}
+                        <PermsWrapper permission="canEdit">
+                          <Button
+                            size="sm"
+                            variant="link"
+                            color="#FF6E33"
+                            onClick={() => onEdit(platform)}
+                          >
+                            修改
+                          </Button>
+                        </PermsWrapper>
+
+                        {/* 使用 PermsWrapper 控制分隔線的顯示（兩個按鈕都有權限時才顯示） */}
+                        <PermsWrapper permission="canEdit">
+                          <PermsWrapper permission="canViewLog">
+                            <Divider
+                              orientation="vertical"
+                              h="16px"
+                              borderColor="gray.300"
+                            />
+                          </PermsWrapper>
+                        </PermsWrapper>
+
+                        {/* 使用 PermsWrapper 控制日誌按鈕的顯示 */}
+                        <PermsWrapper permission="canViewLog">
+                          <Button
+                            size="sm"
+                            variant="link"
+                            color="#FF6E33"
+                            onClick={() => onViewLog?.(platform)}
+                          >
+                            日誌
+                          </Button>
+                        </PermsWrapper>
                       </Flex>
                     </Td>
                   </Tr>
