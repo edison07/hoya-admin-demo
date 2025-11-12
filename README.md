@@ -61,9 +61,85 @@ hoya-admin-demo/
 
 ### 目錄說明
 
-- **public/** - 存放不需要經過打包處理的靜態資源，這些檔案會直接複製到 dist/ 目錄
-- **src/** - 所有原始碼，會經過 Vite 編譯和打包
-- **dist/** - 執行 `npm run build` 後產生的打包檔案，用於部署到生產環境
+#### public/ 目錄
+
+**用途**：存放不需要經過 Vite 編譯處理的靜態資源
+
+**特性**：
+- 檔案會**直接複製**到 `dist/` 根目錄，不經過任何處理
+- 這些檔案的 URL 路徑與專案根路徑相同
+- 適合放置不需要打包優化的資源
+
+**適合放置的檔案**：
+- `favicon.ico` - 網站圖示
+- `robots.txt` - 搜尋引擎爬蟲規則
+- `manifest.json` - PWA 應用程式清單
+- 其他靜態 HTML、XML 檔案
+- 不會被 JavaScript 引用的圖片檔案
+
+**引用方式**：
+```html
+<!-- 直接使用絕對路徑 -->
+<img src="/vite.svg" alt="Logo" />
+```
+
+**注意事項**：
+- 放在 `public/` 的檔案**不會**被 Vite 打包優化（如壓縮、雜湊命名）
+- 如果檔案會被 JS/CSS 引用，應該放在 `src/` 目錄並使用 import
+
+---
+
+#### dist/ 目錄
+
+**用途**：存放打包後的生產環境檔案
+
+**產生方式**：
+```bash
+npm run build
+```
+
+**目錄結構**：
+```
+dist/
+├── index.html           # 打包後的 HTML（已注入打包後的 JS/CSS）
+├── assets/              # 打包後的資源檔案
+│   ├── index-[hash].js  # 打包後的 JavaScript（含雜湊值）
+│   ├── index-[hash].css # 打包後的 CSS（含雜湊值）
+│   └── ...              # 其他資源（圖片、字型等）
+└── vite.svg             # 從 public/ 複製過來的靜態檔案
+```
+
+**特性**：
+- 所有 JavaScript 和 CSS 都會被**壓縮最小化**
+- 檔案名稱包含**雜湊值**（如 `index-a3b2c1d4.js`），用於快取控制
+- 程式碼經過 **Tree Shaking** 移除未使用的程式碼
+- 可直接部署到 Web 伺服器或 CDN
+
+**部署**：
+```bash
+# 本地預覽
+npm run preview
+
+# 部署到伺服器
+# 將整個 dist/ 目錄上傳到 Web 伺服器即可
+```
+
+**注意事項**：
+- `dist/` 目錄應該加入 `.gitignore`，不需要提交到版本控制
+- 每次執行 `npm run build` 會清空並重新產生整個目錄
+- 部署前務必測試 `npm run preview` 確保打包正確
+
+---
+
+#### src/ 目錄
+
+**用途**：存放所有原始碼，會經過 Vite 編譯和打包
+
+**特性**：
+- 所有檔案會被 Vite 處理（編譯、打包、優化）
+- 支援 ES6+ 語法、TypeScript、JSX/TSX
+- 支援模組化 import/export
+- 圖片等資源會被優化並產生雜湊檔名
 
 ## 快速開始
 
