@@ -4,10 +4,14 @@
  */
 
 // React 核心匯入
-import { useEffect, useState } from "react"; // useEffect: 副作用處理, useState: 狀態管理
+import { useEffect, useState, useMemo } from "react"; // useEffect: 副作用處理, useState: 狀態管理
 
 // Chakra UI 圖示匯入
-import { ChevronDownIcon, ChevronRightIcon, HamburgerIcon } from "@chakra-ui/icons"; // ChevronDownIcon: 下箭頭圖示, ChevronRightIcon: 右箭頭圖示, HamburgerIcon: 漢堡選單圖示
+import {
+  ChevronDownIcon,
+  ChevronRightIcon,
+  HamburgerIcon,
+} from "@chakra-ui/icons"; // ChevronDownIcon: 下箭頭圖示, ChevronRightIcon: 右箭頭圖示, HamburgerIcon: 漢堡選單圖示
 
 // React Router 相關匯入
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom"; // Outlet: 子路由渲染容器, Link: 路由連結, useNavigate: 程式化導覽, useLocation: 取得當前路徑
@@ -48,7 +52,10 @@ import { authService } from "@/services/auth.service"; // 認證服務
 
 // Redux 相關匯入
 import { useAppDispatch, useAppSelector } from "@/store/hooks"; // Redux hooks
-import { setPermissions, resetPermissions } from "@/store/slices/permissionSlice"; // 權限 actions
+import {
+  setPermissions,
+  resetPermissions,
+} from "@/store/slices/permissionSlice"; // 權限 actions
 import { setUser, clearUser } from "@/store/slices/userSlice"; // 使用者 actions
 
 /**
@@ -71,7 +78,9 @@ export default function App() {
   const user = useAppSelector((state) => state.user.user);
 
   // 選單類別展開狀態
-  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
+  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>(
+    {},
+  );
 
   // 側邊欄 Drawer 開關狀態
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -84,16 +93,17 @@ export default function App() {
     {
       id: "system",
       label: "系統管理",
-      routes: [
-        { path: "/withdraw-platform", label: "提幣平台設置" },
-      ],
+      routes: [{ path: "/withdraw-platform", label: "提幣平台設置" }],
     },
   ];
 
   // 判斷當前路徑是否在某個分類下
   const isRouteActiveInCategory = (categoryId: string) => {
     const category = menuCategories.find((cat) => cat.id === categoryId);
-    return category?.routes.some((route) => route.path === location.pathname) || false;
+    return (
+      category?.routes.some((route) => route.path === location.pathname) ||
+      false
+    );
   };
 
   // 切換分類展開/收合狀態
@@ -109,7 +119,7 @@ export default function App() {
   const ACTIVE_BG_COLOR_HOVER = "rgba(255, 87, 34, 0.85)";
 
   // 生成麵包屑路徑
-  const getBreadcrumbs = () => {
+  const breadcrumbs = useMemo(() => {
     // 如果在首頁，只顯示首頁
     if (location.pathname === "/") {
       return [{ label: "首頁", path: "/" }];
@@ -128,7 +138,7 @@ export default function App() {
 
     // 如果找不到匹配的路徑，回傳空陣列
     return [];
-  };
+  }, [location.pathname, menuCategories]);
 
   // 元件掛載時從 localStorage 讀取使用者資訊
   useEffect(() => {
@@ -180,10 +190,7 @@ export default function App() {
         bg={location.pathname === "/" ? ACTIVE_BG_COLOR : "transparent"}
         color={location.pathname === "/" ? "white" : "inherit"}
         _hover={{
-          bg:
-            location.pathname === "/"
-              ? ACTIVE_BG_COLOR_HOVER
-              : "gray.100",
+          bg: location.pathname === "/" ? ACTIVE_BG_COLOR_HOVER : "gray.100",
         }}
         onClick={isMobile ? onClose : undefined}
       >
@@ -200,9 +207,7 @@ export default function App() {
             justifyContent="flex-start"
             onClick={() => toggleCategory(category.id)}
             color={
-              isRouteActiveInCategory(category.id)
-                ? ACTIVE_BG_COLOR
-                : "inherit"
+              isRouteActiveInCategory(category.id) ? ACTIVE_BG_COLOR : "inherit"
             }
             rightIcon={
               <Icon
@@ -239,11 +244,7 @@ export default function App() {
                       ? ACTIVE_BG_COLOR
                       : "transparent"
                   }
-                  color={
-                    location.pathname === route.path
-                      ? "white"
-                      : "inherit"
-                  }
+                  color={location.pathname === route.path ? "white" : "inherit"}
                   _hover={{
                     bg:
                       location.pathname === route.path
@@ -352,10 +353,13 @@ export default function App() {
             separator={<ChevronRightIcon color="gray.500" />}
             mb={6}
           >
-            {getBreadcrumbs().map((crumb, index) => {
-              const isLast = index === getBreadcrumbs().length - 1;
+            {breadcrumbs.map((crumb, index) => {
+              const isLast = index === breadcrumbs.length - 1;
               return (
-                <BreadcrumbItem key={index} isCurrentPage={isLast}>
+                <BreadcrumbItem
+                  key={crumb.path || crumb.label}
+                  isCurrentPage={isLast}
+                >
                   {crumb.path && !isLast ? (
                     <BreadcrumbLink as={Link} to={crumb.path} color="gray.600">
                       {crumb.label}

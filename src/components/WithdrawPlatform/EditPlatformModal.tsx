@@ -60,6 +60,9 @@ export default function EditPlatformModal({
   const [editWithdrawEnabled, setEditWithdrawEnabled] = useState(false);
   const [editRemark, setEditRemark] = useState("");
 
+  // 備註驗證狀態
+  const isRemarkInvalid = !editRemark || editRemark.trim().length === 0;
+
   // 當 platform 變更時，更新表單狀態
   useEffect(() => {
     if (platform) {
@@ -71,7 +74,7 @@ export default function EditPlatformModal({
   // 處理確定按鈕
   const handleConfirm = () => {
     // 驗證備註是否為空
-    if (!editRemark || editRemark.trim().length === 0) {
+    if (isRemarkInvalid) {
       return;
     }
 
@@ -113,7 +116,7 @@ export default function EditPlatformModal({
           {/* 備註輸入框 */}
           <FormControl
             isRequired
-            isInvalid={!editRemark || editRemark.trim().length === 0}
+            isInvalid={isRemarkInvalid}
           >
             <Flex align="flex-start" gap={4}>
               <FormLabel mt={2} minW="60px">
@@ -128,18 +131,15 @@ export default function EditPlatformModal({
                   placeholder="請輸入備註（1-200字）"
                   maxLength={200}
                   rows={4}
-                  borderColor={
-                    !editRemark || editRemark.trim().length === 0
-                      ? "red.500"
-                      : "inherit"
-                  }
+                  borderColor={isRemarkInvalid ? "red.500" : "inherit"}
                   _focus={{
                     borderColor: "teal.500",
                     boxShadow: "0 0 0 1px teal.500",
                     outline: "none",
                   }}
+                  isDisabled={isLoading}
                 />
-                {(!editRemark || editRemark.trim().length === 0) && (
+                {isRemarkInvalid && (
                   <FormErrorMessage>此為必填項</FormErrorMessage>
                 )}
               </Box>
