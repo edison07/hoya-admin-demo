@@ -47,53 +47,54 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     // 如果是密碼類型且 showPassword 為 true，則顯示為 text，否則保持原類型
     const inputType = isPasswordType && showPassword ? "text" : type;
 
+    // === 提取共用的 className ===
+    const inputClassName = `focus:border-primary focus:ring-primary block w-full rounded-md border px-3 py-2 text-black shadow-sm focus:outline-none sm:text-sm ${
+      error ? "border-red-600" : "border-gray-300"
+    } ${props.disabled ? "cursor-not-allowed bg-gray-100" : ""}`;
+
     // === UI 渲染 ===
     return (
-      // 替換 FormControl
       <div className="mb-4">
-        {/* 替換 FormLabel */}
         <label className="mb-1 block text-sm font-semibold text-gray-700">
           {label}
         </label>
 
         {isPasswordType ? (
-          // 替換 InputGroup 和 InputRightElement
           <div className="relative">
-            {/* 替換 Input */}
             <input
               ref={ref}
               type={inputType}
-              className={`focus:border-primary focus:ring-primary block w-full rounded-md border px-3 py-2 text-black shadow-sm focus:outline-none sm:text-sm ${error ? "border-red-600" : "border-gray-300"} ${props.disabled ? "cursor-not-allowed bg-gray-100" : ""} `}
+              className={inputClassName}
               style={{ paddingRight: "4.5rem" }} // 為按鈕預留空間
               {...props}
             />
             <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-              {/* 替換 Button */}
               <button
                 type="button"
-                className="text-sm text-gray-600 hover:text-gray-900 focus:outline-none"
+                className="focus:ring-primary rounded text-sm text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2"
                 onClick={() => setShowPassword(!showPassword)}
                 disabled={props.disabled}
+                aria-pressed={showPassword}
+                aria-label={showPassword ? "隱藏密碼" : "顯示密碼"}
               >
                 <img
                   src={showPassword ? hiddenIcon : showIcon}
-                  alt={showPassword ? "隱藏密碼" : "顯示密碼"}
+                  alt=""
                   className="h-5 w-5"
+                  aria-hidden="true"
                 />
               </button>
             </div>
           </div>
         ) : (
-          // 替換 Input
           <input
             ref={ref}
             type={inputType}
-            className={`focus:border-primary focus:ring-primary block w-full rounded-md border px-3 py-2 text-black shadow-sm focus:outline-none sm:text-sm ${error ? "border-red-600" : "border-gray-300"} ${props.disabled ? "cursor-not-allowed bg-gray-100" : ""} `}
+            className={inputClassName}
             {...props}
           />
         )}
 
-        {/* 替換 FormErrorMessage */}
         {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
       </div>
     );

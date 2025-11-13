@@ -20,7 +20,7 @@ import type { Platform, PlatformLog } from "@/types/platform";
 import { formatDateTime } from "@/utils/dateUtils";
 
 // 模擬資料庫：使用變數儲存平台資料（支援更新操作）
-let platformsDb: Platform[] = [...mockPlatforms];
+const platformsDb: Platform[] = [...mockPlatforms];
 
 /**
  * API 處理器陣列
