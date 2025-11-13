@@ -131,7 +131,7 @@ const theme = extendTheme({
       // === 表單狀態顏色 ===
       "form.border.default": "gray.300",
       "form.border.hover": "gray.300",
-      "form.border.focus": "primary.default",
+      "form.border.focus": "info.600",
       "form.border.error": "red.600",
       "form.text.error": "red.600",
       "form.bg.disabled": "gray.100",
