@@ -48,15 +48,18 @@ export default function PlatformTable({
   onViewLog,
 }: PlatformTableProps) {
   return (
-    <Card>
+    <Card bg="white">
       <CardBody py={4} px={6}>
         <TableContainer>
           <Table
-            variant="simple"
-            sx={{ "& td": { py: 4, px: 6 }, "& th": { py: 4, px: 6 } }}
+            variant="unstyled"
+            sx={{
+              "& td": { py: 4, px: 6, borderBottom: "none" },
+              "& th": { py: 4, px: 6, borderBottom: "none" },
+            }}
           >
             <Thead>
-              <Tr>
+              <Tr color="gray.500">
                 <Th>平台名稱</Th>
                 <Th>提幣功能</Th>
                 <Th>備註</Th>
@@ -69,9 +72,11 @@ export default function PlatformTable({
                 data.map((platform, index) => (
                   <Tr
                     key={platform.id}
-                    bg={index % 2 === 0 ? "blackAlpha.100" : "transparent"}
+                    bg={index % 2 === 1 ? "gray.100" : "transparent"}
                   >
-                    <Td fontWeight="semibold">{platform.platformName}</Td>
+                    <Td color="black" fontSize="sm">
+                      {platform.platformName}
+                    </Td>
                     <Td>
                       <Badge
                         colorScheme={platform.withdrawEnabled ? "green" : "red"}
@@ -79,8 +84,12 @@ export default function PlatformTable({
                         {platform.withdrawEnabled ? "啟用" : "停用"}
                       </Badge>
                     </Td>
-                    <Td color="gray.600">{platform.remark}</Td>
-                    <Td color="gray.600">{platform.updateTime}</Td>
+                    <Td color="gray.600" fontSize="sm">
+                      {platform.remark}
+                    </Td>
+                    <Td color="gray.600" fontSize="sm">
+                      {platform.updateTime}
+                    </Td>
                     <Td>
                       <Flex gap={2} align="center">
                         {/* 使用 PermsWrapper 控制修改按鈕的顯示 */}
@@ -88,7 +97,8 @@ export default function PlatformTable({
                           <Button
                             size="sm"
                             variant="link"
-                            color="#FF6E33"
+                            color="brand.600"
+                            fontWeight="normal"
                             onClick={() => onEdit(platform)}
                           >
                             修改
@@ -111,7 +121,8 @@ export default function PlatformTable({
                           <Button
                             size="sm"
                             variant="link"
-                            color="#FF6E33"
+                            color="brand.600"
+                            fontWeight="normal"
                             onClick={() => onViewLog?.(platform)}
                           >
                             日誌

@@ -12,9 +12,50 @@ const theme = extendTheme({
   config,
   colors: {
     brand: {
-      primary: "#FF5722",
-      hover: "#E64A19",
-      link: "#FF6E33",
+      50: "#FFE8E0",
+      100: "#FFCCB8",
+      200: "#FFAB8A",
+      300: "#FF8A5C",
+      400: "#FF6E33",
+      500: "#FF5722", // 主色
+      600: "#E64A19",
+      700: "#BF3D15",
+      800: "#993110",
+      900: "#73240C",
+    },
+    teal: {
+      50: "#E6FFFA",
+      100: "#B2F5EA",
+      200: "#81E6D9",
+      300: "#4FD1C5",
+      400: "#38B2AC",
+      500: "#319795",
+      600: "#2C7A7B",
+      700: "#285E61",
+      800: "#234E52",
+      900: "#1D4044",
+    },
+    primary: {
+      light: "rgba(255, 87, 34, 0.7)", // primary 70% 透明度
+    },
+  },
+  styles: {
+    global: {
+      body: {
+        color: "black",
+      },
+    },
+  },
+  components: {
+    Switch: {
+      baseStyle: {
+        track: {
+          bg: "gray.300",
+          _checked: {
+            bg: "teal.500",
+          },
+        },
+      },
     },
   },
 });

@@ -114,9 +114,8 @@ export default function App() {
     }));
   };
 
-  // 選中狀態的顏色常數
-  const ACTIVE_BG_COLOR = "rgba(255, 87, 34, 0.7)";
-  const ACTIVE_BG_COLOR_HOVER = "rgba(255, 87, 34, 0.85)";
+  // 選中狀態的顏色常數（使用 primary-light）
+  const ACTIVE_BG_COLOR = "primary.light";
 
   // 生成麵包屑路徑
   const breadcrumbs = useMemo(() => {
@@ -168,12 +167,19 @@ export default function App() {
   const renderSidebarContent = () => (
     <VStack align="stretch" spacing={3}>
       {/* 側邊欄標題 */}
-      <Heading size="md" mb={2}>
-        HOYA BIT Admin
-      </Heading>
+      <Flex align="center" gap={2} mb={2}>
+        <img
+          src="/favicon.ico"
+          alt="Logo"
+          style={{ width: "24px", height: "24px" }}
+        />
+        <Heading size="md" textColor="black">
+          HOYA BIT Admin
+        </Heading>
+      </Flex>
 
       {/* 分隔線 */}
-      <Divider />
+      <Divider borderColor="gray.300" />
 
       {/* Overview 標籤 */}
       <Text fontSize="sm" fontWeight="bold" color="gray.400" mt={2}>
@@ -184,13 +190,13 @@ export default function App() {
       <Button
         as={Link}
         to="/"
-        colorScheme="black"
+        colorScheme="brand"
         variant="ghost"
         justifyContent="flex-start"
         bg={location.pathname === "/" ? ACTIVE_BG_COLOR : "transparent"}
-        color={location.pathname === "/" ? "white" : "inherit"}
+        color={location.pathname === "/" ? "white" : "gray.700"}
         _hover={{
-          bg: location.pathname === "/" ? ACTIVE_BG_COLOR_HOVER : "gray.100",
+          bg: location.pathname === "/" ? ACTIVE_BG_COLOR : "transparent",
         }}
         onClick={isMobile ? onClose : undefined}
       >
@@ -202,13 +208,16 @@ export default function App() {
         <Box key={category.id}>
           {/* 分類按鈕 */}
           <Button
-            colorScheme="black"
+            colorScheme="brand"
             variant="ghost"
             justifyContent="flex-start"
             onClick={() => toggleCategory(category.id)}
             color={
-              isRouteActiveInCategory(category.id) ? ACTIVE_BG_COLOR : "inherit"
+              isRouteActiveInCategory(category.id) ? "brand.600" : "gray.700"
             }
+            _hover={{
+              bg: "transparent",
+            }}
             rightIcon={
               <Icon
                 as={
@@ -218,8 +227,8 @@ export default function App() {
                 }
                 color={
                   isRouteActiveInCategory(category.id)
-                    ? ACTIVE_BG_COLOR
-                    : "inherit"
+                    ? "brand.600"
+                    : "gray.700"
                 }
               />
             }
@@ -235,7 +244,7 @@ export default function App() {
                   key={route.path}
                   as={Link}
                   to={route.path}
-                  colorScheme="black"
+                  colorScheme="brand"
                   variant="ghost"
                   justifyContent="flex-start"
                   size="sm"
@@ -244,12 +253,14 @@ export default function App() {
                       ? ACTIVE_BG_COLOR
                       : "transparent"
                   }
-                  color={location.pathname === route.path ? "white" : "inherit"}
+                  color={
+                    location.pathname === route.path ? "white" : "gray.700"
+                  }
                   _hover={{
                     bg:
                       location.pathname === route.path
-                        ? ACTIVE_BG_COLOR_HOVER
-                        : "gray.100",
+                        ? ACTIVE_BG_COLOR
+                        : "transparent",
                   }}
                   onClick={isMobile ? onClose : undefined}
                 >
@@ -299,12 +310,14 @@ export default function App() {
               {/* 使用者頭像 */}
               <Avatar size="sm" name={user?.name || user?.username || ""} />
               {/* 使用者名稱 */}
-              <Text>{user?.name || user?.username || "使用者"}</Text>
+              <Text color="black">
+                {user?.name || user?.username || "使用者"}
+              </Text>
             </Flex>
           </MenuButton>
-          <MenuList>
+          <MenuList bgColor="white">
             {/* 登出選項 */}
-            <MenuItem onClick={handleLogout} color="red.500">
+            <MenuItem onClick={handleLogout} bgColor="white" color="black" _hover={{ bg: "gray.100" }}>
               登出
             </MenuItem>
           </MenuList>
@@ -327,7 +340,7 @@ export default function App() {
         <DrawerOverlay />
         <DrawerContent bg="transparent" boxShadow="none">
           <DrawerBody pt={12} px={4}>
-            <Card position="relative">
+            <Card position="relative" bg="white">
               <DrawerCloseButton position="absolute" top={2} right={2} />
               <CardBody>{renderSidebarContent()}</CardBody>
             </Card>
@@ -339,7 +352,7 @@ export default function App() {
       <Box display="flex" flex="1" p={4} gap={4}>
         {/* 側邊欄區域 - 桌面版（寬度 >= 1280px 時顯示） */}
         {!isMobile && (
-          <Card w="220px" h="fit-content">
+          <Card w="250px" h="fit-content" bg="white">
             <CardBody>{renderSidebarContent()}</CardBody>
           </Card>
         )}
@@ -361,13 +374,18 @@ export default function App() {
                   isCurrentPage={isLast}
                 >
                   {crumb.path && !isLast ? (
-                    <BreadcrumbLink as={Link} to={crumb.path} color="gray.600">
+                    <BreadcrumbLink
+                      as={Link}
+                      to={crumb.path}
+                      color="gray.600"
+                      fontWeight="normal"
+                    >
                       {crumb.label}
                     </BreadcrumbLink>
                   ) : (
                     <Text
                       color={isLast ? "gray.800" : "gray.600"}
-                      fontWeight={isLast ? "semibold" : "normal"}
+                      fontWeight="normal"
                     >
                       {crumb.label}
                     </Text>

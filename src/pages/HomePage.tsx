@@ -36,7 +36,7 @@ export default function HomePage() {
   return (
     <Heading color="teal.400">
       Welcome Back,{" "}
-      <Text as="span" color="orange.500">
+      <Text as="span" color="brand.600">
         {user?.name || user?.username || ""}
       </Text>
     </Heading>

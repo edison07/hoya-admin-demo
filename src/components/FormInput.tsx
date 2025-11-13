@@ -7,16 +7,9 @@
 // React 核心 Hooks
 import { forwardRef, useState } from "react"; // forwardRef: 轉發 ref, useState: 狀態管理
 
-// Chakra UI 表單相關元件
-import {
-  FormControl, // 表單控制容器，處理驗證狀態
-  FormLabel, // 表單標籤
-  Input, // 輸入欄位
-  FormErrorMessage, // 錯誤訊息顯示
-  InputGroup, // 輸入群組，用於組合輸入和附加元素
-  InputRightElement, // 輸入欄位右側元素容器
-  Button, // 按鈕元件
-} from "@chakra-ui/react";
+// 引入圖片資源
+import showIcon from "@/assets/show.png";
+import hiddenIcon from "@/assets/hidden.png";
 
 /**
  * FormInput 元件的 Props 介面定義
@@ -54,58 +47,55 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     // 如果是密碼類型且 showPassword 為 true，則顯示為 text，否則保持原類型
     const inputType = isPasswordType && showPassword ? "text" : type;
 
-    // === 輸入欄位元素 ===
-    // 定義輸入欄位，可在密碼類型和一般類型中複用
-    const inputElement = (
-      <Input
-        ref={ref} // 轉發 ref 給 Input 元素
-        type={inputType} // 動態類型（text 或 password）
-        pr={isPasswordType ? "4.5rem" : undefined} // 密碼類型時增加右側內距，為按鈕留空間
-        {...props} // 展開其他 props
-        borderColor={error ? "red.500" : "gray.300"} // 有錯誤時使用紅色邊框
-        _hover={{ borderColor: error ? "red.600" : "gray.400" }} // 滑鼠懸停樣式
-        _focus={{
-          borderColor: error ? "red.600" : "#3182ce", // 焦點時邊框顏色
-        }}
-      />
-    );
-
     // === UI 渲染 ===
     return (
-      // FormControl: 表單控制容器，isInvalid 控制驗證狀態
-      <FormControl isInvalid={!!error}>
-        {/* 表單標籤 */}
-        <FormLabel fontSize="sm" fontWeight="semibold" color="gray.700">
+      // 替換 FormControl
+      <div className="mb-4">
+        {/* 替換 FormLabel */}
+        <label className="mb-1 block text-sm font-semibold text-gray-700">
           {label}
-        </FormLabel>
+        </label>
 
-        {/* 根據類型渲染不同的輸入結構 */}
         {isPasswordType ? (
-          // 密碼類型：使用 InputGroup 包裹，添加顯示/隱藏按鈕
-          <InputGroup size="md">
-            {inputElement} {/* 輸入欄位 */}
-            {/* 右側元素容器 */}
-            <InputRightElement width="4.5rem">
-              {/* 顯示/隱藏切換按鈕 */}
-              <Button
-                h="1.75rem" // 按鈕高度
-                size="sm" // 小尺寸
-                onClick={() => setShowPassword(!showPassword)} // 切換顯示狀態
-                isDisabled={props.disabled} // 根據輸入欄位的禁用狀態禁用按鈕
-                variant="ghost" // 幽靈樣式（透明背景）
+          // 替換 InputGroup 和 InputRightElement
+          <div className="relative">
+            {/* 替換 Input */}
+            <input
+              ref={ref}
+              type={inputType}
+              className={`focus:border-primary focus:ring-primary block w-full rounded-md border px-3 py-2 text-black shadow-sm focus:outline-none sm:text-sm ${error ? "border-red-600" : "border-gray-300"} ${props.disabled ? "cursor-not-allowed bg-gray-100" : ""} `}
+              style={{ paddingRight: "4.5rem" }} // 為按鈕預留空間
+              {...props}
+            />
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+              {/* 替換 Button */}
+              <button
+                type="button"
+                className="text-sm text-gray-600 hover:text-gray-900 focus:outline-none"
+                onClick={() => setShowPassword(!showPassword)}
+                disabled={props.disabled}
               >
-                {showPassword ? "隱藏" : "顯示"} {/* 動態按鈕文字 */}
-              </Button>
-            </InputRightElement>
-          </InputGroup>
+                <img
+                  src={showPassword ? hiddenIcon : showIcon}
+                  alt={showPassword ? "隱藏密碼" : "顯示密碼"}
+                  className="h-5 w-5"
+                />
+              </button>
+            </div>
+          </div>
         ) : (
-          // 一般類型：直接渲染輸入欄位
-          inputElement
+          // 替換 Input
+          <input
+            ref={ref}
+            type={inputType}
+            className={`focus:border-primary focus:ring-primary block w-full rounded-md border px-3 py-2 text-black shadow-sm focus:outline-none sm:text-sm ${error ? "border-red-600" : "border-gray-300"} ${props.disabled ? "cursor-not-allowed bg-gray-100" : ""} `}
+            {...props}
+          />
         )}
 
-        {/* 錯誤訊息顯示（僅在有錯誤時顯示） */}
-        <FormErrorMessage>{error}</FormErrorMessage>
-      </FormControl>
+        {/* 替換 FormErrorMessage */}
+        {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+      </div>
     );
   },
 );

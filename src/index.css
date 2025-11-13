@@ -1,11 +1,71 @@
 @import "tailwindcss";
 
-/* Global styles */
+/* 用 Chakra 的 CSS 變數做「別名」：Tailwind 工具類會自動生成 */
+@theme {
+  /* Brand */
+  --color-brand-50: var(--chakra-colors-brand-50);
+  --color-brand-100: var(--chakra-colors-brand-100);
+  --color-brand-200: var(--chakra-colors-brand-200);
+  --color-brand-300: var(--chakra-colors-brand-300);
+  --color-brand-400: var(--chakra-colors-brand-400);
+  --color-brand-500: var(--chakra-colors-brand-500);
+  --color-brand-600: var(--chakra-colors-brand-600);
+  --color-brand-700: var(--chakra-colors-brand-700);
+  --color-brand-800: var(--chakra-colors-brand-800);
+  --color-brand-900: var(--chakra-colors-brand-900);
+
+  /* 常用語義別名（方便直接 bg-primary / text-fg 這樣用） */
+  --color-primary: var(--chakra-colors-brand-500);
+  --color-primary-light: var(--chakra-colors-primary-light);
+  --color-primary-foreground: var(--chakra-colors-white);
+  --color-link: var(--chakra-colors-brand-400);
+
+  /* Gray（映射到 Chakra 的 gray） */
+  --color-gray-50: var(--chakra-colors-gray-50);
+  --color-gray-100: var(--chakra-colors-gray-100);
+  --color-gray-200: var(--chakra-colors-gray-200);
+  --color-gray-300: var(--chakra-colors-gray-300);
+  --color-gray-400: var(--chakra-colors-gray-400);
+  --color-gray-500: var(--chakra-colors-gray-500);
+  --color-gray-600: var(--chakra-colors-gray-600);
+  --color-gray-700: var(--chakra-colors-gray-700);
+  --color-gray-800: var(--chakra-colors-gray-800);
+  --color-gray-900: var(--chakra-colors-gray-900);
+
+  /* Red（若你會用到） */
+  --color-red-50: var(--chakra-colors-red-50);
+  --color-red-100: var(--chakra-colors-red-100);
+  --color-red-500: var(--chakra-colors-red-500);
+  --color-red-600: var(--chakra-colors-red-600);
+
+  /* Teal */
+  --color-teal-50: var(--chakra-colors-teal-50);
+  --color-teal-100: var(--chakra-colors-teal-100);
+  --color-teal-200: var(--chakra-colors-teal-200);
+  --color-teal-300: var(--chakra-colors-teal-300);
+  --color-teal-400: var(--chakra-colors-teal-400);
+  --color-teal-500: var(--chakra-colors-teal-500);
+  --color-teal-600: var(--chakra-colors-teal-600);
+  --color-teal-700: var(--chakra-colors-teal-700);
+  --color-teal-800: var(--chakra-colors-teal-800);
+  --color-teal-900: var(--chakra-colors-teal-900);
+
+  /* 基本色 */
+  --color-white: var(--chakra-colors-white);
+  --color-black: var(--chakra-colors-black);
+
+  /* 版面語義（背景/前景） */
+  --color-bg: var(--chakra-colors-gray-50);
+  --color-fg: var(--chakra-colors-gray-900);
+}
+
+/* 全域字型（保留你原設定） */
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: black;
 }

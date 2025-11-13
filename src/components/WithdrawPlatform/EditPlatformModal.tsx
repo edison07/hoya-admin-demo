@@ -35,10 +35,7 @@ interface EditPlatformModalProps {
   isOpen: boolean; // Modal 是否開啟
   platform: Platform | null; // 要編輯的平台資料
   onClose: () => void; // 關閉 Modal 的回調
-  onConfirm: (data: {
-    withdrawEnabled: boolean;
-    remark: string;
-  }) => void; // 確定修改的回調
+  onConfirm: (data: { withdrawEnabled: boolean; remark: string }) => void; // 確定修改的回調
   isLoading?: boolean; // 是否正在載入（更新中）
 }
 
@@ -97,7 +94,7 @@ export default function EditPlatformModal({
   return (
     <Modal isOpen={isOpen} onClose={handleCancel} isCentered>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent bg="white">
         <ModalHeader>修改 {platform?.platformName}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
@@ -110,14 +107,12 @@ export default function EditPlatformModal({
               id="withdraw-switch"
               isChecked={editWithdrawEnabled}
               onChange={(e) => setEditWithdrawEnabled(e.target.checked)}
+              colorScheme="teal"
             />
           </FormControl>
 
           {/* 備註輸入框 */}
-          <FormControl
-            isRequired
-            isInvalid={isRemarkInvalid}
-          >
+          <FormControl isRequired isInvalid={isRemarkInvalid}>
             <Flex align="flex-start" gap={4}>
               <FormLabel mt={2} minW="60px">
                 備註
@@ -131,16 +126,28 @@ export default function EditPlatformModal({
                   placeholder="請輸入備註（1-200字）"
                   maxLength={200}
                   rows={4}
-                  borderColor={isRemarkInvalid ? "red.500" : "inherit"}
+                  borderWidth="2px"
+                  borderStyle="solid"
+                  borderColor={isRemarkInvalid ? "red.600" : "gray.200"}
+                  boxShadow="none"
+                  _hover={{
+                    borderColor: isRemarkInvalid ? "red.600" : "gray.200",
+                  }}
                   _focus={{
-                    borderColor: "teal.500",
-                    boxShadow: "0 0 0 1px teal.500",
+                    borderWidth: "2px",
+                    borderStyle: "solid",
+                    borderColor: isRemarkInvalid ? "red.600" : "blue.500",
+                    boxShadow: "none",
                     outline: "none",
+                  }}
+                  _invalid={{
+                    borderWidth: "2px",
+                    boxShadow: "none",
                   }}
                   isDisabled={isLoading}
                 />
                 {isRemarkInvalid && (
-                  <FormErrorMessage>此為必填項</FormErrorMessage>
+                  <FormErrorMessage color="red.500">此為必填項</FormErrorMessage>
                 )}
               </Box>
             </Flex>
@@ -150,7 +157,7 @@ export default function EditPlatformModal({
         <ModalFooter>
           <Button
             variant="ghost"
-            colorScheme="teal"
+            color="teal.600"
             mr={3}
             onClick={handleCancel}
             isDisabled={isLoading}
@@ -158,10 +165,19 @@ export default function EditPlatformModal({
             取消
           </Button>
           <Button
-            colorScheme="teal"
+            bgColor="teal.600"
+            color="white"
             onClick={handleConfirm}
             isLoading={isLoading}
             loadingText="更新中..."
+            isDisabled={isRemarkInvalid || isLoading}
+            _hover={{ bgColor: "teal.700" }}
+            _disabled={{
+              bgColor: "teal.600",
+              color: "white",
+              cursor: "not-allowed",
+              opacity: 0.3,
+            }}
           >
             確定
           </Button>

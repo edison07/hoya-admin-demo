@@ -120,7 +120,7 @@ export default function PlatformLogModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size="6xl">
       <ModalOverlay />
-      <ModalContent maxW="1200px" maxH="80vh">
+      <ModalContent maxW="1200px" maxH="80vh" bg="white">
         <ModalHeader>日誌 {platform?.platformName}</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6} overflowY="auto" maxH="calc(80vh - 80px)">
@@ -142,7 +142,7 @@ export default function PlatformLogModal({
             <Flex gap={2}>
               <Button
                 variant="ghost"
-                colorScheme="teal"
+                color="teal.600"
                 isDisabled
                 rightIcon={<ChevronDownIcon />}
               >
@@ -150,7 +150,7 @@ export default function PlatformLogModal({
               </Button>
               <Button
                 variant="ghost"
-                colorScheme="teal"
+                color="teal.600"
                 onClick={() => {
                   setSelectedStartDate(DEFAULT_START_DATE);
                   setSelectedEndDate(DEFAULT_END_DATE);
@@ -162,8 +162,10 @@ export default function PlatformLogModal({
               </Button>
               <Button
                 variant="outline"
-                colorScheme="teal"
+                color="teal.600"
+                borderColor="teal.600"
                 borderRadius="10px"
+                _hover={{ bg: "teal.50" }}
                 onClick={() => {
                   setStartDate(selectedStartDate);
                   setEndDate(selectedEndDate);
@@ -177,12 +179,15 @@ export default function PlatformLogModal({
           {/* 日誌表格 */}
           <TableContainer>
             <Table
-              variant="simple"
+              variant="unstyled"
               size="sm"
-              sx={{ "& td": { py: 4, px: 4 }, "& th": { py: 4, px: 4 } }}
+              sx={{
+                "& td": { py: 4, px: 4, borderBottom: "none" },
+                "& th": { py: 4, px: 4, borderBottom: "none" },
+              }}
             >
               <Thead>
-                <Tr>
+                <Tr color="gray.500">
                   <Th>項目</Th>
                   <Th>異動前</Th>
                   <Th>異動後</Th>
@@ -195,14 +200,14 @@ export default function PlatformLogModal({
                   <Tr>
                     <Td colSpan={5} textAlign="center" py={8}>
                       <Flex justify="center" align="center" gap={2}>
-                        <Spinner size="sm" color="teal.500" />
+                        <Spinner size="sm" color="brand.500" />
                         <Text color="gray.600">載入日誌中...</Text>
                       </Flex>
                     </Td>
                   </Tr>
                 ) : error ? (
                   <Tr>
-                    <Td colSpan={5} textAlign="center" py={8} color="red.500">
+                    <Td colSpan={5} textAlign="center" py={8} color="red.600">
                       載入日誌時發生錯誤：{error.message}
                     </Td>
                   </Tr>
@@ -213,7 +218,7 @@ export default function PlatformLogModal({
                     return (
                       <Tr
                         key={log.id}
-                        bg={index % 2 === 0 ? "blackAlpha.50" : "transparent"}
+                        bg={index % 2 === 1 ? "gray.100" : "transparent"}
                       >
                         <Td>{log.item}</Td>
                         <Td color="gray.600" whiteSpace="pre-line">
@@ -242,7 +247,12 @@ export default function PlatformLogModal({
           </TableContainer>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="teal" onClick={onClose}>
+          <Button
+            bgColor="teal.600"
+            color="white"
+            onClick={onClose}
+            _hover={{ bgColor: "teal.700" }}
+          >
             關閉
           </Button>
         </ModalFooter>

@@ -85,6 +85,7 @@ export default function PlatformSearchFilters({
               平台名稱
             </FormLabel>
             <Select
+              borderColor="gray.200"
               value={platformName}
               onChange={(e) => setPlatformName(e.target.value)}
             >
@@ -105,6 +106,7 @@ export default function PlatformSearchFilters({
               提幣功能
             </FormLabel>
             <Select
+              borderColor="gray.200"
               value={withdrawEnabled}
               onChange={(e) => setWithdrawEnabled(e.target.value)}
             >
@@ -122,6 +124,7 @@ export default function PlatformSearchFilters({
               更新時間
             </FormLabel>
             <Input
+              borderColor="gray.200"
               type="date"
               value={updateTime}
               onChange={(e) => setUpdateTime(e.target.value)}
@@ -137,20 +140,22 @@ export default function PlatformSearchFilters({
       <Flex gap={2}>
         <Button
           variant="ghost"
-          colorScheme="teal"
+          color="teal.600"
           isDisabled
           rightIcon={<ChevronDownIcon />}
         >
           展開
         </Button>
-        <Button variant="ghost" colorScheme="teal" onClick={handleReset}>
+        <Button variant="ghost" color="teal.600" onClick={handleReset}>
           重置
         </Button>
         <Button
           variant="outline"
-          colorScheme="teal"
+          color="teal.600"
+          borderColor="teal.600"
           onClick={handleSearch}
           borderRadius="10px"
+          _hover={{ bg: "teal.50" }}
         >
           查詢
         </Button>
