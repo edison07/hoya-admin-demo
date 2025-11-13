@@ -48,7 +48,7 @@ export default function PlatformTable({
   onViewLog,
 }: PlatformTableProps) {
   return (
-    <Card bg="white">
+    <Card>
       <CardBody py={4} px={6}>
         <TableContainer>
           <Table
@@ -59,7 +59,7 @@ export default function PlatformTable({
             }}
           >
             <Thead>
-              <Tr color="gray.500">
+              <Tr>
                 <Th>平台名稱</Th>
                 <Th>提幣功能</Th>
                 <Th>備註</Th>
@@ -70,11 +70,8 @@ export default function PlatformTable({
             <Tbody>
               {data.length > 0 ? (
                 data.map((platform, index) => (
-                  <Tr
-                    key={platform.id}
-                    bg={index % 2 === 1 ? "gray.100" : "transparent"}
-                  >
-                    <Td color="black" fontSize="sm">
+                  <Tr key={platform.id} bg={index % 2 === 1 ? "bg.stripe" : "transparent"}>
+                    <Td color="text.primary" fontSize="sm">
                       {platform.platformName}
                     </Td>
                     <Td>
@@ -84,10 +81,10 @@ export default function PlatformTable({
                         {platform.withdrawEnabled ? "啟用" : "停用"}
                       </Badge>
                     </Td>
-                    <Td color="gray.600" fontSize="sm">
+                    <Td color="text.secondary" fontSize="sm">
                       {platform.remark}
                     </Td>
-                    <Td color="gray.600" fontSize="sm">
+                    <Td color="text.secondary" fontSize="sm">
                       {platform.updateTime}
                     </Td>
                     <Td>
@@ -97,7 +94,6 @@ export default function PlatformTable({
                           <Button
                             size="sm"
                             variant="link"
-                            color="brand.600"
                             fontWeight="normal"
                             onClick={() => onEdit(platform)}
                           >
@@ -108,11 +104,7 @@ export default function PlatformTable({
                         {/* 使用 PermsWrapper 控制分隔線的顯示（兩個按鈕都有權限時才顯示） */}
                         <PermsWrapper permission="canEdit">
                           <PermsWrapper permission="canViewLog">
-                            <Divider
-                              orientation="vertical"
-                              h="16px"
-                              borderColor="gray.300"
-                            />
+                            <Divider orientation="vertical" h="16px" />
                           </PermsWrapper>
                         </PermsWrapper>
 
@@ -121,7 +113,6 @@ export default function PlatformTable({
                           <Button
                             size="sm"
                             variant="link"
-                            color="brand.600"
                             fontWeight="normal"
                             onClick={() => onViewLog?.(platform)}
                           >
@@ -134,7 +125,7 @@ export default function PlatformTable({
                 ))
               ) : (
                 <Tr>
-                  <Td colSpan={5} textAlign="center" py={8} color="gray.500">
+                  <Td colSpan={5} textAlign="center" py={8} color="text.tertiary">
                     查無紀錄
                   </Td>
                 </Tr>

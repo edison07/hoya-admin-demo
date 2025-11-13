@@ -114,8 +114,8 @@ export default function App() {
     }));
   };
 
-  // 選中狀態的顏色常數（使用 primary-light）
-  const ACTIVE_BG_COLOR = "primary.light";
+  // 選中狀態的顏色常數（使用語意化 token）
+  const ACTIVE_BG_COLOR = "bg.selected";
 
   // 生成麵包屑路徑
   const breadcrumbs = useMemo(() => {
@@ -173,16 +173,16 @@ export default function App() {
           alt="Logo"
           style={{ width: "24px", height: "24px" }}
         />
-        <Heading size="md" textColor="black">
+        <Heading size="md" color="text.primary">
           HOYA BIT Admin
         </Heading>
       </Flex>
 
       {/* 分隔線 */}
-      <Divider borderColor="gray.300" />
+      <Divider />
 
       {/* Overview 標籤 */}
-      <Text fontSize="sm" fontWeight="bold" color="gray.400" mt={2}>
+      <Text fontSize="sm" fontWeight="bold" color="text.placeholder" mt={2}>
         OVERVIEW
       </Text>
 
@@ -194,7 +194,7 @@ export default function App() {
         variant="ghost"
         justifyContent="flex-start"
         bg={location.pathname === "/" ? ACTIVE_BG_COLOR : "transparent"}
-        color={location.pathname === "/" ? "white" : "gray.700"}
+        color={location.pathname === "/" ? "text.inverse" : "text.primary"}
         _hover={{
           bg: location.pathname === "/" ? ACTIVE_BG_COLOR : "transparent",
         }}
@@ -213,7 +213,9 @@ export default function App() {
             justifyContent="flex-start"
             onClick={() => toggleCategory(category.id)}
             color={
-              isRouteActiveInCategory(category.id) ? "brand.600" : "gray.700"
+              isRouteActiveInCategory(category.id)
+                ? "link.default"
+                : "text.primary"
             }
             _hover={{
               bg: "transparent",
@@ -227,8 +229,8 @@ export default function App() {
                 }
                 color={
                   isRouteActiveInCategory(category.id)
-                    ? "brand.600"
-                    : "gray.700"
+                    ? "link.default"
+                    : "text.primary"
                 }
               />
             }
@@ -254,7 +256,9 @@ export default function App() {
                       : "transparent"
                   }
                   color={
-                    location.pathname === route.path ? "white" : "gray.700"
+                    location.pathname === route.path
+                      ? "text.inverse"
+                      : "text.primary"
                   }
                   _hover={{
                     bg:
@@ -293,7 +297,7 @@ export default function App() {
 
   return (
     // 主容器：使用 flexbox 佈局，最小高度為整個視窗高度
-    <Box display="flex" minH="100vh" flexDirection="column" bg="#F7FAFC">
+    <Box display="flex" minH="100vh" flexDirection="column" bg="bg.canvas">
       {/* 頂部導覽列 */}
       <Flex px={8} py={4} justify="flex-end" align="center" gap={3}>
         {/* 使用者選單 */}
@@ -310,21 +314,14 @@ export default function App() {
               {/* 使用者頭像 */}
               <Avatar size="sm" name={user?.name || user?.username || ""} />
               {/* 使用者名稱 */}
-              <Text color="black">
+              <Text color="text.primary">
                 {user?.name || user?.username || "使用者"}
               </Text>
             </Flex>
           </MenuButton>
-          <MenuList bgColor="white">
+          <MenuList>
             {/* 登出選項 */}
-            <MenuItem
-              onClick={handleLogout}
-              bgColor="white"
-              color="black"
-              _hover={{ bg: "gray.100" }}
-            >
-              登出
-            </MenuItem>
+            <MenuItem onClick={handleLogout}>登出</MenuItem>
           </MenuList>
         </Menu>
 
@@ -336,7 +333,7 @@ export default function App() {
             variant="ghost"
             aria-label="開啟選單"
             size="md"
-            color="black"
+            color="text.primary"
           />
         )}
       </Flex>
@@ -344,9 +341,9 @@ export default function App() {
       {/* 側邊欄 Drawer（小螢幕時使用） */}
       <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
         <DrawerOverlay />
-        <DrawerContent bg="transparent" boxShadow="none">
+        <DrawerContent bg="bg.overlay" boxShadow="none">
           <DrawerBody pt={12} px={4}>
-            <Card position="relative" bg="white">
+            <Card position="relative">
               <DrawerCloseButton position="absolute" top={2} right={2} />
               <CardBody>{renderSidebarContent()}</CardBody>
             </Card>
@@ -358,7 +355,7 @@ export default function App() {
       <Box display="flex" flex="1" p={4} gap={4}>
         {/* 側邊欄區域 - 桌面版（寬度 >= 1280px 時顯示） */}
         {!isMobile && (
-          <Card w="250px" h="fit-content" bg="white">
+          <Card w="250px" h="fit-content">
             <CardBody>{renderSidebarContent()}</CardBody>
           </Card>
         )}
@@ -369,7 +366,7 @@ export default function App() {
           {/* 麵包屑導航 */}
           <Breadcrumb
             spacing="8px"
-            separator={<ChevronRightIcon color="gray.500" />}
+            separator={<ChevronRightIcon color="text.tertiary" />}
             mb={6}
           >
             {breadcrumbs.map((crumb, index) => {
@@ -383,14 +380,14 @@ export default function App() {
                     <BreadcrumbLink
                       as={Link}
                       to={crumb.path}
-                      color="gray.600"
+                      color="text.secondary"
                       fontWeight="normal"
                     >
                       {crumb.label}
                     </BreadcrumbLink>
                   ) : (
                     <Text
-                      color={isLast ? "gray.800" : "gray.600"}
+                      color={isLast ? "text.primary" : "text.secondary"}
                       fontWeight="normal"
                     >
                       {crumb.label}

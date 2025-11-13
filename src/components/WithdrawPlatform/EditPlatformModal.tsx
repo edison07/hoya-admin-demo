@@ -94,7 +94,7 @@ export default function EditPlatformModal({
   return (
     <Modal isOpen={isOpen} onClose={handleCancel} isCentered>
       <ModalOverlay />
-      <ModalContent bg="white">
+      <ModalContent>
         <ModalHeader>修改 {platform?.platformName}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
@@ -128,15 +128,21 @@ export default function EditPlatformModal({
                   rows={4}
                   borderWidth="2px"
                   borderStyle="solid"
-                  borderColor={isRemarkInvalid ? "red.600" : "gray.200"}
+                  borderColor={
+                    isRemarkInvalid ? "form.border.error" : "border.default"
+                  }
                   boxShadow="none"
                   _hover={{
-                    borderColor: isRemarkInvalid ? "red.600" : "gray.200",
+                    borderColor: isRemarkInvalid
+                      ? "form.border.error"
+                      : "border.default",
                   }}
                   _focus={{
                     borderWidth: "2px",
                     borderStyle: "solid",
-                    borderColor: isRemarkInvalid ? "red.600" : "blue.500",
+                    borderColor: isRemarkInvalid
+                      ? "form.border.error"
+                      : "border.focus",
                     boxShadow: "none",
                     outline: "none",
                   }}
@@ -147,7 +153,7 @@ export default function EditPlatformModal({
                   isDisabled={isLoading}
                 />
                 {isRemarkInvalid && (
-                  <FormErrorMessage color="red.500">此為必填項</FormErrorMessage>
+                  <FormErrorMessage>此為必填項</FormErrorMessage>
                 )}
               </Box>
             </Flex>
@@ -157,7 +163,7 @@ export default function EditPlatformModal({
         <ModalFooter>
           <Button
             variant="ghost"
-            color="teal.600"
+            color="secondary.default"
             mr={3}
             onClick={handleCancel}
             isDisabled={isLoading}
@@ -165,19 +171,11 @@ export default function EditPlatformModal({
             取消
           </Button>
           <Button
-            bgColor="teal.600"
-            color="white"
+            variant="solidSecondary"
             onClick={handleConfirm}
             isLoading={isLoading}
             loadingText="更新中..."
             isDisabled={isRemarkInvalid || isLoading}
-            _hover={{ bgColor: "teal.700" }}
-            _disabled={{
-              bgColor: "teal.600",
-              color: "white",
-              cursor: "not-allowed",
-              opacity: 0.3,
-            }}
           >
             確定
           </Button>

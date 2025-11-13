@@ -7,7 +7,7 @@
 import { useEffect, useRef } from "react";
 
 // Chakra UI 元件匯入
-import { Input, useColorModeValue } from "@chakra-ui/react";
+import { Input } from "@chakra-ui/react";
 
 // flatpickr 相關匯入
 import flatpickr from "flatpickr";
@@ -52,9 +52,6 @@ export default function DateRangePicker({
   useEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
-
-  // 背景色（支援深色模式）
-  const bgColor = useColorModeValue("white", "gray.700");
 
   // 初始化 flatpickr
   useEffect(() => {
@@ -101,9 +98,6 @@ export default function DateRangePicker({
       ref={inputRef}
       type="text"
       placeholder={placeholder}
-      bgColor="white"
-      borderColor="gray.200"
-      borderWidth="1px"
       fontSize="sm"
       readOnly
     />

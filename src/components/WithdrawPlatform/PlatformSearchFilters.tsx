@@ -85,7 +85,6 @@ export default function PlatformSearchFilters({
               平台名稱
             </FormLabel>
             <Select
-              borderColor="gray.200"
               value={platformName}
               onChange={(e) => setPlatformName(e.target.value)}
             >
@@ -106,7 +105,6 @@ export default function PlatformSearchFilters({
               提幣功能
             </FormLabel>
             <Select
-              borderColor="gray.200"
               value={withdrawEnabled}
               onChange={(e) => setWithdrawEnabled(e.target.value)}
             >
@@ -124,13 +122,10 @@ export default function PlatformSearchFilters({
               更新時間
             </FormLabel>
             <Input
-              borderColor="gray.200"
-              bgColor="white"
               type="date"
               value={updateTime}
               onChange={(e) => setUpdateTime(e.target.value)}
               cursor="pointer"
-              _hover={{ borderColor: "gray.300" }}
               sx={{
                 "::-webkit-calendar-picker-indicator": {
                   filter: "invert(0.5)",
@@ -149,22 +144,26 @@ export default function PlatformSearchFilters({
       <Flex gap={2}>
         <Button
           variant="ghost"
-          color="teal.600"
+          color="secondary.default"
           isDisabled
           rightIcon={<ChevronDownIcon />}
         >
           展開
         </Button>
-        <Button variant="ghost" color="teal.600" onClick={handleReset}>
+        <Button
+          variant="ghost"
+          color="secondary.default"
+          onClick={handleReset}
+        >
           重置
         </Button>
         <Button
           variant="outline"
-          color="teal.600"
-          borderColor="teal.600"
+          color="secondary.default"
+          borderColor="secondary.default"
           onClick={handleSearch}
           borderRadius="10px"
-          _hover={{ bg: "teal.50" }}
+          _hover={{ bg: "secondary.light" }}
         >
           查詢
         </Button>
