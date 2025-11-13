@@ -317,7 +317,12 @@ export default function App() {
           </MenuButton>
           <MenuList bgColor="white">
             {/* 登出選項 */}
-            <MenuItem onClick={handleLogout} bgColor="white" color="black" _hover={{ bg: "gray.100" }}>
+            <MenuItem
+              onClick={handleLogout}
+              bgColor="white"
+              color="black"
+              _hover={{ bg: "gray.100" }}
+            >
               登出
             </MenuItem>
           </MenuList>
@@ -331,6 +336,7 @@ export default function App() {
             variant="ghost"
             aria-label="開啟選單"
             size="md"
+            color="black"
           />
         )}
       </Flex>

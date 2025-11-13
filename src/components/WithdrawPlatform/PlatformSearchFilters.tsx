@@ -125,9 +125,18 @@ export default function PlatformSearchFilters({
             </FormLabel>
             <Input
               borderColor="gray.200"
+              bgColor="white"
               type="date"
               value={updateTime}
               onChange={(e) => setUpdateTime(e.target.value)}
+              cursor="pointer"
+              _hover={{ borderColor: "gray.300" }}
+              sx={{
+                "::-webkit-calendar-picker-indicator": {
+                  filter: "invert(0.5)",
+                  cursor: "pointer",
+                },
+              }}
             />
           </FormControl>
         </GridItem>
