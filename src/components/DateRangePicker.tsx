@@ -18,6 +18,16 @@ import locale from "flatpickr/dist/l10n/zh-tw.js";
 import dayjs from "dayjs";
 
 /**
+ * flatpickr 實例介面
+ * 定義我們需要使用的 flatpickr 方法
+ */
+interface FlatpickrInstance {
+  destroy: () => void;
+  setDate: (date: string | Date | (string | Date)[], triggerChange?: boolean) => void;
+  clear: () => void;
+}
+
+/**
  * DateRangePicker Props 介面
  */
 interface DateRangePickerProps {
@@ -44,8 +54,7 @@ export default function DateRangePicker({
   const inputRef = useRef<HTMLInputElement>(null);
 
   // flatpickr 實例引用
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const flatpickrRef = useRef<any>(null);
+  const flatpickrRef = useRef<FlatpickrInstance | null>(null);
 
   // 用於儲存最新 onChange 函式的引用，避免 stale closure
   const onChangeRef = useRef(onChange);

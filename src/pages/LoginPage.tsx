@@ -118,11 +118,11 @@ export default function LoginPage() {
   // 使用 useCallback 記憶化 onBlur 處理函式
   const handleUsernameBlur = useCallback(
     () => handleBlur("username"),
-    [username, password],
+    [username, password, handleBlur],
   );
   const handlePasswordBlur = useCallback(
     () => handleBlur("password"),
-    [username, password],
+    [username, password, handleBlur],
   );
 
   /**
@@ -224,9 +224,11 @@ export default function LoginPage() {
           {/* 替換 VStack (標題區域) */}
           <div className="mb-8 space-y-4 text-center">
             {/* 替換 Heading */}
-            <h1 className="text-primary text-3xl font-bold">HOYA BIT Admin</h1>
+            <h1 className="text-primary-light text-3xl font-bold">
+              HOYA BIT Admin
+            </h1>
             {/* 替換 Text */}
-            <p className="text-sm font-bold text-gray-600">
+            <p className="text-sm font-bold text-gray-400">
               請輸入你的帳號和密碼來登入
             </p>
           </div>

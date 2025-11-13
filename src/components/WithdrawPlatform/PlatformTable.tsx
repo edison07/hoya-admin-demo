@@ -22,6 +22,7 @@ import {
 
 // 權限控制元件匯入
 import PermsWrapper from "@/components/PermsWrapper";
+import MultiPermsWrapper from "@/components/MultiPermsWrapper";
 
 // 類型定義匯入
 import type { Platform } from "@/types/platform";
@@ -101,12 +102,13 @@ export default function PlatformTable({
                           </Button>
                         </PermsWrapper>
 
-                        {/* 使用 PermsWrapper 控制分隔線的顯示（兩個按鈕都有權限時才顯示） */}
-                        <PermsWrapper permission="canEdit">
-                          <PermsWrapper permission="canViewLog">
-                            <Divider orientation="vertical" h="16px" />
-                          </PermsWrapper>
-                        </PermsWrapper>
+                        {/* 使用 MultiPermsWrapper 控制分隔線的顯示（兩個按鈕都有權限時才顯示） */}
+                        <MultiPermsWrapper
+                          permissions={["canEdit", "canViewLog"]}
+                          mode="all"
+                        >
+                          <Divider orientation="vertical" h="16px" />
+                        </MultiPermsWrapper>
 
                         {/* 使用 PermsWrapper 控制日誌按鈕的顯示 */}
                         <PermsWrapper permission="canViewLog">

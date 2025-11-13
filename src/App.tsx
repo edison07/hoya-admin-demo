@@ -88,14 +88,17 @@ export default function App() {
   // 判斷是否為小螢幕（寬度 < 1280px）
   const isMobile = useBreakpointValue({ base: true, xl: false });
 
-  // 選單分類定義
-  const menuCategories = [
-    {
-      id: "system",
-      label: "系統管理",
-      routes: [{ path: "/withdraw-platform", label: "提幣平台設置" }],
-    },
-  ];
+  // 選單分類定義（使用 useMemo 避免每次 render 重新建立）
+  const menuCategories = useMemo(
+    () => [
+      {
+        id: "system",
+        label: "系統管理",
+        routes: [{ path: "/withdraw-platform", label: "提幣平台設置" }],
+      },
+    ],
+    [],
+  );
 
   // 判斷當前路徑是否在某個分類下
   const isRouteActiveInCategory = (categoryId: string) => {
