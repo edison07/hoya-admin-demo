@@ -52,8 +52,11 @@ export default function PlatformTable({
       <CardBody py={4} px={6}>
         <TableContainer>
           <Table
-            variant="simple"
-            sx={{ "& td": { py: 4, px: 6 }, "& th": { py: 4, px: 6 } }}
+            variant="unstyled"
+            sx={{
+              "& td": { py: 4, px: 6, borderBottom: "none" },
+              "& th": { py: 4, px: 6, borderBottom: "none" },
+            }}
           >
             <Thead>
               <Tr>
@@ -67,11 +70,10 @@ export default function PlatformTable({
             <Tbody>
               {data.length > 0 ? (
                 data.map((platform, index) => (
-                  <Tr
-                    key={platform.id}
-                    bg={index % 2 === 0 ? "blackAlpha.100" : "transparent"}
-                  >
-                    <Td fontWeight="semibold">{platform.platformName}</Td>
+                  <Tr key={platform.id} bg={index % 2 === 1 ? "bg.stripe" : "transparent"}>
+                    <Td color="text.primary" fontSize="sm">
+                      {platform.platformName}
+                    </Td>
                     <Td>
                       <Badge
                         colorScheme={platform.withdrawEnabled ? "green" : "red"}
@@ -79,8 +81,12 @@ export default function PlatformTable({
                         {platform.withdrawEnabled ? "啟用" : "停用"}
                       </Badge>
                     </Td>
-                    <Td color="gray.600">{platform.remark}</Td>
-                    <Td color="gray.600">{platform.updateTime}</Td>
+                    <Td color="text.secondary" fontSize="sm">
+                      {platform.remark}
+                    </Td>
+                    <Td color="text.secondary" fontSize="sm">
+                      {platform.updateTime}
+                    </Td>
                     <Td>
                       <Flex gap={2} align="center">
                         {/* 使用 PermsWrapper 控制修改按鈕的顯示 */}
@@ -88,7 +94,7 @@ export default function PlatformTable({
                           <Button
                             size="sm"
                             variant="link"
-                            color="#FF6E33"
+                            fontWeight="normal"
                             onClick={() => onEdit(platform)}
                           >
                             修改
@@ -98,11 +104,7 @@ export default function PlatformTable({
                         {/* 使用 PermsWrapper 控制分隔線的顯示（兩個按鈕都有權限時才顯示） */}
                         <PermsWrapper permission="canEdit">
                           <PermsWrapper permission="canViewLog">
-                            <Divider
-                              orientation="vertical"
-                              h="16px"
-                              borderColor="gray.300"
-                            />
+                            <Divider orientation="vertical" h="16px" />
                           </PermsWrapper>
                         </PermsWrapper>
 
@@ -111,7 +113,7 @@ export default function PlatformTable({
                           <Button
                             size="sm"
                             variant="link"
-                            color="#FF6E33"
+                            fontWeight="normal"
                             onClick={() => onViewLog?.(platform)}
                           >
                             日誌
@@ -123,7 +125,7 @@ export default function PlatformTable({
                 ))
               ) : (
                 <Tr>
-                  <Td colSpan={5} textAlign="center" py={8} color="gray.500">
+                  <Td colSpan={5} textAlign="center" py={8} color="text.tertiary">
                     查無紀錄
                   </Td>
                 </Tr>

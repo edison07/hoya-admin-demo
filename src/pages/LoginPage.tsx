@@ -8,13 +8,6 @@ import { useState, useCallback } from "react"; // useState: 狀態管理, useCal
 
 // Chakra UI 元件匯入
 import {
-  Box, // 容器元件
-  Button, // 按鈕元件
-  Flex, // Flexbox 佈局元件
-  Heading, // 標題元件
-  Text, // 文字元件
-  Image, // 圖片元件
-  VStack, // 垂直堆疊元件
   useToast, // Toast 通知 Hook
   Spinner, // 載入動畫元件
 } from "@chakra-ui/react";
@@ -123,8 +116,14 @@ export default function LoginPage() {
   };
 
   // 使用 useCallback 記憶化 onBlur 處理函式
-  const handleUsernameBlur = useCallback(() => handleBlur("username"), [handleBlur]);
-  const handlePasswordBlur = useCallback(() => handleBlur("password"), [handleBlur]);
+  const handleUsernameBlur = useCallback(
+    () => handleBlur("username"),
+    [username, password],
+  );
+  const handlePasswordBlur = useCallback(
+    () => handleBlur("password"),
+    [username, password],
+  );
 
   /**
    * 處理表單提交
@@ -216,54 +215,28 @@ export default function LoginPage() {
 
   // === UI 渲染 ===
   return (
-    // 主容器：全螢幕高度，使用 Flexbox 佈局
-    <Flex h="100vh" w="full">
-      {/* 左側區域 - 登入表單 */}
-      {/* w: 響應式寬度（手機全寬，大螢幕 50%） */}
-      {/* align: 垂直置中 */}
-      {/* justify: 水平置中 */}
-      <Flex w={{ base: "full", lg: "50%" }} align="center" justify="center">
-        {/* 表單容器 */}
-        {/* maxW: 最大寬度 */}
-        {/* bg: 背景色 */}
-        {/* p: 內距 */}
-        {/* borderRadius: 圓角 */}
-        {/* boxShadow: 陰影效果 */}
-        <Box
-          maxW="md"
-          bg="white"
-          p={8}
-          borderRadius="2xl"
-          boxShadow="2xl"
-        >
-          {/* 標題區域 */}
-          {/* spacing: 子元素間距 */}
-          {/* mb: 下邊距 */}
-          <VStack spacing={4} mb={8}>
-            {/* 應用程式標題 */}
-            <Heading size="xl" color="brand.primary">
-              HOYA BIT Admin
-            </Heading>
-            {/* 提示文字 */}
-            <Text fontSize="sm" fontWeight="bold" color="gray.500">
+    // 替換 Flex (主容器)
+    <div className="flex min-h-screen bg-white">
+      {/* 替換 Flex (左側區域 - 登入表單) */}
+      <div className="flex w-full items-center justify-center lg:w-1/2">
+        {/* 替換 Box (表單容器) */}
+        <div className="max-w-md rounded-2xl bg-white p-8 shadow-2xl">
+          {/* 替換 VStack (標題區域) */}
+          <div className="mb-8 space-y-4 text-center">
+            {/* 替換 Heading */}
+            <h1 className="text-primary text-3xl font-bold">HOYA BIT Admin</h1>
+            {/* 替換 Text */}
+            <p className="text-sm font-bold text-gray-600">
               請輸入你的帳號和密碼來登入
-            </Text>
-          </VStack>
+            </p>
+          </div>
 
           {/* 登入表單 */}
           {/* onSubmit: 表單提交時呼叫 handleSubmit */}
           <form onSubmit={handleSubmit}>
-            {/* 表單欄位垂直堆疊，間距為 5 */}
-            <VStack spacing={5}>
+            {/* 替換 VStack (表單欄位垂直堆疊) */}
+            <div className="space-y-5">
               {/* 帳號輸入欄位 */}
-              {/* label: 欄位標籤 */}
-              {/* type: 輸入類型 */}
-              {/* placeholder: 佔位提示文字 */}
-              {/* value: 綁定的狀態值 */}
-              {/* onChange: 輸入變更處理函式 */}
-              {/* error: 驗證錯誤訊息 */}
-              {/* disabled: 登入進行中時禁用 */}
-              {/* autoComplete: 瀏覽器自動完成提示 */}
               <FormInput
                 label="帳號"
                 type="text"
@@ -276,8 +249,6 @@ export default function LoginPage() {
               />
 
               {/* 密碼輸入欄位 */}
-              {/* type="password": 顯示為密碼欄位（帶顯示/隱藏按鈕） */}
-              {/* onBlur: 失去焦點時驗證 */}
               <FormInput
                 label="密碼"
                 type="password"
@@ -289,56 +260,37 @@ export default function LoginPage() {
                 autoComplete="current-password"
               />
 
-              {/* 登入按鈕 */}
-              {/* type="submit": 提交表單 */}
-              {/* colorScheme: Chakra UI 顏色主題 */}
-              {/* bg: 背景色 */}
-              {/* w: 寬度 */}
-              {/* isLoading: 顯示載入狀態 */}
-              {/* loadingText: 載入時顯示的文字 */}
-              {/* spinner: 自訂載入動畫 */}
-              {/* _hover: 滑鼠懸停樣式 */}
-              <Button
+              {/* 替換 Button (登入按鈕) */}
+              <button
                 type="submit"
-                colorScheme="orange"
-                bg="brand.primary"
-                w="full"
-                isLoading={loginMutation.isPending}
-                loadingText="登入中"
-                spinner={<Spinner size="sm" />}
-                _hover={{ bg: "brand.hover" }}
+                className={`bg-primary text-primary-foreground hover:bg-brand-600 focus:ring-primary w-full rounded-md border border-transparent px-4 py-2 text-sm font-medium shadow-sm focus:ring-2 focus:ring-offset-2 focus:outline-none ${
+                  loginMutation.isPending ? "cursor-not-allowed opacity-70" : ""
+                } `}
+                disabled={loginMutation.isPending}
               >
-                登入
-              </Button>
-            </VStack>
+                {loginMutation.isPending ? (
+                  <span className="flex items-center justify-center">
+                    <Spinner size="sm" className="mr-2" /> 登入中
+                  </span>
+                ) : (
+                  "登入"
+                )}
+              </button>
+            </div>
           </form>
 
-          {/* 測試帳號提示文字 */}
-          {/* mt: 上邊距 */}
-          {/* textAlign: 文字對齊 */}
-          <Text mt={6} textAlign="center" fontSize="sm" color="gray.600">
+          {/* 替換 Text (測試帳號提示文字) */}
+          <p className="mt-6 text-center text-sm text-gray-600">
             測試帳號: admin / Admin123
-          </Text>
-        </Box>
-      </Flex>
+          </p>
+        </div>
+      </div>
 
-      {/* 右側區域 - Logo 展示 */}
-      {/* w: 寬度 50% */}
-      {/* align: 垂直置中 */}
-      {/* justify: 水平置中 */}
-      {/* display: 響應式顯示（手機隱藏，大螢幕顯示） */}
-      <Flex
-        w="50%"
-        align="center"
-        justify="center"
-        display={{ base: "none", lg: "flex" }}
-      >
-        {/* 應用程式 Logo */}
-        {/* src: 圖片來源 */}
-        {/* alt: 替代文字 */}
-        {/* transform: CSS 變換（縮放至 80%） */}
-        <Image src={logo} alt="App logo" transform="scale(0.8)" />
-      </Flex>
-    </Flex>
+      {/* 替換 Flex (右側區域 - Logo 展示) */}
+      <div className="hidden w-1/2 items-center justify-center lg:flex">
+        {/* 替換 Image */}
+        <img src={logo} alt="App logo" className="scale-80 transform" />
+      </div>
+    </div>
   );
 }

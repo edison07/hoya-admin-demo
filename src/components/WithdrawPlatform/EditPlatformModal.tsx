@@ -35,10 +35,7 @@ interface EditPlatformModalProps {
   isOpen: boolean; // Modal 是否開啟
   platform: Platform | null; // 要編輯的平台資料
   onClose: () => void; // 關閉 Modal 的回調
-  onConfirm: (data: {
-    withdrawEnabled: boolean;
-    remark: string;
-  }) => void; // 確定修改的回調
+  onConfirm: (data: { withdrawEnabled: boolean; remark: string }) => void; // 確定修改的回調
   isLoading?: boolean; // 是否正在載入（更新中）
 }
 
@@ -110,14 +107,12 @@ export default function EditPlatformModal({
               id="withdraw-switch"
               isChecked={editWithdrawEnabled}
               onChange={(e) => setEditWithdrawEnabled(e.target.checked)}
+              colorScheme="teal"
             />
           </FormControl>
 
           {/* 備註輸入框 */}
-          <FormControl
-            isRequired
-            isInvalid={isRemarkInvalid}
-          >
+          <FormControl isRequired isInvalid={isRemarkInvalid}>
             <Flex align="flex-start" gap={4}>
               <FormLabel mt={2} minW="60px">
                 備註
@@ -131,11 +126,29 @@ export default function EditPlatformModal({
                   placeholder="請輸入備註（1-200字）"
                   maxLength={200}
                   rows={4}
-                  borderColor={isRemarkInvalid ? "red.500" : "inherit"}
+                  borderWidth="2px"
+                  borderStyle="solid"
+                  borderColor={
+                    isRemarkInvalid ? "form.border.error" : "border.default"
+                  }
+                  boxShadow="none"
+                  _hover={{
+                    borderColor: isRemarkInvalid
+                      ? "form.border.error"
+                      : "border.default",
+                  }}
                   _focus={{
-                    borderColor: "teal.500",
-                    boxShadow: "0 0 0 1px teal.500",
+                    borderWidth: "2px",
+                    borderStyle: "solid",
+                    borderColor: isRemarkInvalid
+                      ? "form.border.error"
+                      : "border.focus",
+                    boxShadow: "none",
                     outline: "none",
+                  }}
+                  _invalid={{
+                    borderWidth: "2px",
+                    boxShadow: "none",
                   }}
                   isDisabled={isLoading}
                 />
@@ -150,7 +163,7 @@ export default function EditPlatformModal({
         <ModalFooter>
           <Button
             variant="ghost"
-            colorScheme="teal"
+            color="secondary.default"
             mr={3}
             onClick={handleCancel}
             isDisabled={isLoading}
@@ -158,10 +171,11 @@ export default function EditPlatformModal({
             取消
           </Button>
           <Button
-            colorScheme="teal"
+            variant="solidSecondary"
             onClick={handleConfirm}
             isLoading={isLoading}
             loadingText="更新中..."
+            isDisabled={isRemarkInvalid || isLoading}
           >
             確定
           </Button>

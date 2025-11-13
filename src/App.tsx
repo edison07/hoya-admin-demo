@@ -114,9 +114,8 @@ export default function App() {
     }));
   };
 
-  // 選中狀態的顏色常數
-  const ACTIVE_BG_COLOR = "rgba(255, 87, 34, 0.7)";
-  const ACTIVE_BG_COLOR_HOVER = "rgba(255, 87, 34, 0.85)";
+  // 選中狀態的顏色常數（使用語意化 token）
+  const ACTIVE_BG_COLOR = "bg.selected";
 
   // 生成麵包屑路徑
   const breadcrumbs = useMemo(() => {
@@ -168,15 +167,22 @@ export default function App() {
   const renderSidebarContent = () => (
     <VStack align="stretch" spacing={3}>
       {/* 側邊欄標題 */}
-      <Heading size="md" mb={2}>
-        HOYA BIT Admin
-      </Heading>
+      <Flex align="center" gap={2} mb={2}>
+        <img
+          src="/favicon.ico"
+          alt="Logo"
+          style={{ width: "24px", height: "24px" }}
+        />
+        <Heading size="md" color="text.primary">
+          HOYA BIT Admin
+        </Heading>
+      </Flex>
 
       {/* 分隔線 */}
       <Divider />
 
       {/* Overview 標籤 */}
-      <Text fontSize="sm" fontWeight="bold" color="gray.400" mt={2}>
+      <Text fontSize="sm" fontWeight="bold" color="text.placeholder" mt={2}>
         OVERVIEW
       </Text>
 
@@ -184,13 +190,13 @@ export default function App() {
       <Button
         as={Link}
         to="/"
-        colorScheme="black"
+        colorScheme="brand"
         variant="ghost"
         justifyContent="flex-start"
         bg={location.pathname === "/" ? ACTIVE_BG_COLOR : "transparent"}
-        color={location.pathname === "/" ? "white" : "inherit"}
+        color={location.pathname === "/" ? "text.inverse" : "text.primary"}
         _hover={{
-          bg: location.pathname === "/" ? ACTIVE_BG_COLOR_HOVER : "gray.100",
+          bg: location.pathname === "/" ? ACTIVE_BG_COLOR : "transparent",
         }}
         onClick={isMobile ? onClose : undefined}
       >
@@ -202,13 +208,18 @@ export default function App() {
         <Box key={category.id}>
           {/* 分類按鈕 */}
           <Button
-            colorScheme="black"
+            colorScheme="brand"
             variant="ghost"
             justifyContent="flex-start"
             onClick={() => toggleCategory(category.id)}
             color={
-              isRouteActiveInCategory(category.id) ? ACTIVE_BG_COLOR : "inherit"
+              isRouteActiveInCategory(category.id)
+                ? "link.default"
+                : "text.primary"
             }
+            _hover={{
+              bg: "transparent",
+            }}
             rightIcon={
               <Icon
                 as={
@@ -218,8 +229,8 @@ export default function App() {
                 }
                 color={
                   isRouteActiveInCategory(category.id)
-                    ? ACTIVE_BG_COLOR
-                    : "inherit"
+                    ? "link.default"
+                    : "text.primary"
                 }
               />
             }
@@ -235,7 +246,7 @@ export default function App() {
                   key={route.path}
                   as={Link}
                   to={route.path}
-                  colorScheme="black"
+                  colorScheme="brand"
                   variant="ghost"
                   justifyContent="flex-start"
                   size="sm"
@@ -244,12 +255,16 @@ export default function App() {
                       ? ACTIVE_BG_COLOR
                       : "transparent"
                   }
-                  color={location.pathname === route.path ? "white" : "inherit"}
+                  color={
+                    location.pathname === route.path
+                      ? "text.inverse"
+                      : "text.primary"
+                  }
                   _hover={{
                     bg:
                       location.pathname === route.path
-                        ? ACTIVE_BG_COLOR_HOVER
-                        : "gray.100",
+                        ? ACTIVE_BG_COLOR
+                        : "transparent",
                   }}
                   onClick={isMobile ? onClose : undefined}
                 >
@@ -282,7 +297,7 @@ export default function App() {
 
   return (
     // 主容器：使用 flexbox 佈局，最小高度為整個視窗高度
-    <Box display="flex" minH="100vh" flexDirection="column" bg="#F7FAFC">
+    <Box display="flex" minH="100vh" flexDirection="column" bg="bg.canvas">
       {/* 頂部導覽列 */}
       <Flex px={8} py={4} justify="flex-end" align="center" gap={3}>
         {/* 使用者選單 */}
@@ -299,14 +314,14 @@ export default function App() {
               {/* 使用者頭像 */}
               <Avatar size="sm" name={user?.name || user?.username || ""} />
               {/* 使用者名稱 */}
-              <Text>{user?.name || user?.username || "使用者"}</Text>
+              <Text color="text.primary">
+                {user?.name || user?.username || "使用者"}
+              </Text>
             </Flex>
           </MenuButton>
           <MenuList>
             {/* 登出選項 */}
-            <MenuItem onClick={handleLogout} color="red.500">
-              登出
-            </MenuItem>
+            <MenuItem onClick={handleLogout}>登出</MenuItem>
           </MenuList>
         </Menu>
 
@@ -318,6 +333,7 @@ export default function App() {
             variant="ghost"
             aria-label="開啟選單"
             size="md"
+            color="text.primary"
           />
         )}
       </Flex>
@@ -325,7 +341,7 @@ export default function App() {
       {/* 側邊欄 Drawer（小螢幕時使用） */}
       <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
         <DrawerOverlay />
-        <DrawerContent bg="transparent" boxShadow="none">
+        <DrawerContent bg="bg.overlay" boxShadow="none">
           <DrawerBody pt={12} px={4}>
             <Card position="relative">
               <DrawerCloseButton position="absolute" top={2} right={2} />
@@ -339,7 +355,7 @@ export default function App() {
       <Box display="flex" flex="1" p={4} gap={4}>
         {/* 側邊欄區域 - 桌面版（寬度 >= 1280px 時顯示） */}
         {!isMobile && (
-          <Card w="220px" h="fit-content">
+          <Card w="250px" h="fit-content">
             <CardBody>{renderSidebarContent()}</CardBody>
           </Card>
         )}
@@ -350,7 +366,7 @@ export default function App() {
           {/* 麵包屑導航 */}
           <Breadcrumb
             spacing="8px"
-            separator={<ChevronRightIcon color="gray.500" />}
+            separator={<ChevronRightIcon color="text.tertiary" />}
             mb={6}
           >
             {breadcrumbs.map((crumb, index) => {
@@ -361,13 +377,18 @@ export default function App() {
                   isCurrentPage={isLast}
                 >
                   {crumb.path && !isLast ? (
-                    <BreadcrumbLink as={Link} to={crumb.path} color="gray.600">
+                    <BreadcrumbLink
+                      as={Link}
+                      to={crumb.path}
+                      color="text.secondary"
+                      fontWeight="normal"
+                    >
                       {crumb.label}
                     </BreadcrumbLink>
                   ) : (
                     <Text
-                      color={isLast ? "gray.800" : "gray.600"}
-                      fontWeight={isLast ? "semibold" : "normal"}
+                      color={isLast ? "text.primary" : "text.secondary"}
+                      fontWeight="normal"
                     >
                       {crumb.label}
                     </Text>

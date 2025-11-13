@@ -125,6 +125,13 @@ export default function PlatformSearchFilters({
               type="date"
               value={updateTime}
               onChange={(e) => setUpdateTime(e.target.value)}
+              cursor="pointer"
+              sx={{
+                "::-webkit-calendar-picker-indicator": {
+                  filter: "invert(0.5)",
+                  cursor: "pointer",
+                },
+              }}
             />
           </FormControl>
         </GridItem>
@@ -137,20 +144,26 @@ export default function PlatformSearchFilters({
       <Flex gap={2}>
         <Button
           variant="ghost"
-          colorScheme="teal"
+          color="secondary.default"
           isDisabled
           rightIcon={<ChevronDownIcon />}
         >
           展開
         </Button>
-        <Button variant="ghost" colorScheme="teal" onClick={handleReset}>
+        <Button
+          variant="ghost"
+          color="secondary.default"
+          onClick={handleReset}
+        >
           重置
         </Button>
         <Button
           variant="outline"
-          colorScheme="teal"
+          color="secondary.default"
+          borderColor="secondary.default"
           onClick={handleSearch}
           borderRadius="10px"
+          _hover={{ bg: "secondary.light" }}
         >
           查詢
         </Button>

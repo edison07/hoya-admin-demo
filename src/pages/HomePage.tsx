@@ -34,9 +34,9 @@ export default function HomePage() {
 
   // 返回歡迎標題，顯示使用者名稱
   return (
-    <Heading color="teal.400">
+    <Heading color="secondary.default">
       Welcome Back,{" "}
-      <Text as="span" color="orange.500">
+      <Text as="span" color="link.default">
         {user?.name || user?.username || ""}
       </Text>
     </Heading>

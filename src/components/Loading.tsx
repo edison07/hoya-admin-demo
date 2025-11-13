@@ -37,13 +37,7 @@ export const Loading = ({
   // 載入動畫：旋轉的圓圈
   const spinner = (
     <div
-      className={`
-        ${sizeClasses[size]}
-        animate-spin
-        rounded-full
-        border-orange-500
-        border-t-transparent
-      `}
+      className={` ${sizeClasses[size]} border-brand-primary-500 animate-spin rounded-full border-t-transparent`}
       role="status"
       aria-label="載入中"
     />

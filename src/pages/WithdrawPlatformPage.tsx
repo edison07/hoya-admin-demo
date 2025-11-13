@@ -178,7 +178,7 @@ export default function WithdrawPlatformPage() {
   // 錯誤處理
   if (error) {
     return (
-      <Box p={6} textAlign="center" color="red.500">
+      <Box p={6} textAlign="center" color="status.error">
         載入平台資料時發生錯誤：{error.message}
       </Box>
     );

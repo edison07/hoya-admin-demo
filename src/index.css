@@ -1,11 +1,72 @@
 @import "tailwindcss";
 
-/* Global styles */
+/*
+  將 Chakra UI 的語意化 token 映射到 Tailwind CSS
+  這樣可以在 Tailwind class 中使用語意化的顏色名稱
+  例如：bg-primary、text-secondary、border-default
+*/
+@theme {
+  /* === 主要顏色 === */
+  --color-primary: var(--chakra-colors-primary-default);
+  --color-primary-hover: var(--chakra-colors-primary-hover);
+  --color-primary-light: var(--chakra-colors-primary-light);
+  --color-primary-foreground: var(--chakra-colors-primary-foreground);
+
+  /* === 次要顏色 === */
+  --color-secondary: var(--chakra-colors-secondary-default);
+  --color-secondary-hover: var(--chakra-colors-secondary-hover);
+  --color-secondary-light: var(--chakra-colors-secondary-light);
+  --color-secondary-foreground: var(--chakra-colors-secondary-foreground);
+
+  /* === 連結顏色 === */
+  --color-link: var(--chakra-colors-link-default);
+  --color-link-hover: var(--chakra-colors-link-hover);
+
+  /* === 文字顏色 === */
+  --color-text-primary: var(--chakra-colors-text-primary);
+  --color-text-secondary: var(--chakra-colors-text-secondary);
+  --color-text-tertiary: var(--chakra-colors-text-tertiary);
+  --color-text-placeholder: var(--chakra-colors-text-placeholder);
+  --color-text-disabled: var(--chakra-colors-text-disabled);
+  --color-text-inverse: var(--chakra-colors-text-inverse);
+
+  /* === 背景顏色 === */
+  --color-bg-canvas: var(--chakra-colors-bg-canvas);
+  --color-bg-surface: var(--chakra-colors-bg-surface);
+  --color-bg-hover: var(--chakra-colors-bg-hover);
+  --color-bg-selected: var(--chakra-colors-bg-selected);
+  --color-bg-disabled: var(--chakra-colors-bg-disabled);
+  --color-bg-stripe: var(--chakra-colors-bg-stripe);
+
+  /* === 邊框顏色 === */
+  --color-border: var(--chakra-colors-border-default);
+  --color-border-hover: var(--chakra-colors-border-hover);
+  --color-border-focus: var(--chakra-colors-border-focus);
+  --color-border-error: var(--chakra-colors-border-error);
+  --color-border-divider: var(--chakra-colors-border-divider);
+
+  /* === 狀態顏色 === */
+  --color-success: var(--chakra-colors-status-success);
+  --color-error: var(--chakra-colors-status-error);
+  --color-warning: var(--chakra-colors-status-warning);
+  --color-info: var(--chakra-colors-status-info);
+
+  /* === Brand 原始色階（保留供進階使用） === */
+  --color-brand-500: var(--chakra-colors-brand-500);
+  --color-brand-600: var(--chakra-colors-brand-600);
+
+  /* === 基本色 === */
+  --color-white: var(--chakra-colors-white);
+  --color-black: var(--chakra-colors-black);
+}
+
+/* 全域字型（保留你原設定） */
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: black;
 }

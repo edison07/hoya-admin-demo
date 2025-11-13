@@ -34,12 +34,7 @@ export default function PlatformActionsCell({
     <Flex gap={2} align="center">
       {/* 使用 PermsWrapper 控制修改按鈕的顯示 */}
       <PermsWrapper permission="canEdit">
-        <Button
-          size="sm"
-          variant="link"
-          color="brand.link"
-          onClick={() => onEdit(platform)}
-        >
+        <Button size="sm" variant="link" onClick={() => onEdit(platform)}>
           修改
         </Button>
       </PermsWrapper>
@@ -47,22 +42,13 @@ export default function PlatformActionsCell({
       {/* 使用 PermsWrapper 控制分隔線的顯示（兩個按鈕都有權限時才顯示） */}
       <PermsWrapper permission="canEdit">
         <PermsWrapper permission="canViewLog">
-          <Divider
-            orientation="vertical"
-            h="16px"
-            borderColor="gray.300"
-          />
+          <Divider orientation="vertical" h="16px" />
         </PermsWrapper>
       </PermsWrapper>
 
       {/* 使用 PermsWrapper 控制日誌按鈕的顯示 */}
       <PermsWrapper permission="canViewLog">
-        <Button
-          size="sm"
-          variant="link"
-          color="brand.link"
-          onClick={() => onViewLog?.(platform)}
-        >
+        <Button size="sm" variant="link" onClick={() => onViewLog?.(platform)}>
           日誌
         </Button>
       </PermsWrapper>

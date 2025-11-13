@@ -14,7 +14,7 @@ import { mockPlatforms } from "./platformData";
 import { mockPlatformLogs } from "./platformLogData";
 
 // 類型定義匯入
-import type { Platform } from "@/types/platform";
+import type { Platform, PlatformLog } from "@/types/platform";
 
 // 工具函數匯入
 import { formatDateTime } from "@/utils/dateUtils";

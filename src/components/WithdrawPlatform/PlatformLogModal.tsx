@@ -142,7 +142,7 @@ export default function PlatformLogModal({
             <Flex gap={2}>
               <Button
                 variant="ghost"
-                colorScheme="teal"
+                color="secondary.default"
                 isDisabled
                 rightIcon={<ChevronDownIcon />}
               >
@@ -150,7 +150,7 @@ export default function PlatformLogModal({
               </Button>
               <Button
                 variant="ghost"
-                colorScheme="teal"
+                color="secondary.default"
                 onClick={() => {
                   setSelectedStartDate(DEFAULT_START_DATE);
                   setSelectedEndDate(DEFAULT_END_DATE);
@@ -162,8 +162,10 @@ export default function PlatformLogModal({
               </Button>
               <Button
                 variant="outline"
-                colorScheme="teal"
+                color="secondary.default"
+                borderColor="secondary.default"
                 borderRadius="10px"
+                _hover={{ bg: "secondary.light" }}
                 onClick={() => {
                   setStartDate(selectedStartDate);
                   setEndDate(selectedEndDate);
@@ -177,9 +179,12 @@ export default function PlatformLogModal({
           {/* 日誌表格 */}
           <TableContainer>
             <Table
-              variant="simple"
+              variant="unstyled"
               size="sm"
-              sx={{ "& td": { py: 4, px: 4 }, "& th": { py: 4, px: 4 } }}
+              sx={{
+                "& td": { py: 4, px: 4, borderBottom: "none" },
+                "& th": { py: 4, px: 4, borderBottom: "none" },
+              }}
             >
               <Thead>
                 <Tr>
@@ -195,14 +200,14 @@ export default function PlatformLogModal({
                   <Tr>
                     <Td colSpan={5} textAlign="center" py={8}>
                       <Flex justify="center" align="center" gap={2}>
-                        <Spinner size="sm" color="teal.500" />
-                        <Text color="gray.600">載入日誌中...</Text>
+                        <Spinner size="sm" color="primary.default" />
+                        <Text color="text.secondary">載入日誌中...</Text>
                       </Flex>
                     </Td>
                   </Tr>
                 ) : error ? (
                   <Tr>
-                    <Td colSpan={5} textAlign="center" py={8} color="red.500">
+                    <Td colSpan={5} textAlign="center" py={8} color="status.error">
                       載入日誌時發生錯誤：{error.message}
                     </Td>
                   </Tr>
@@ -211,19 +216,16 @@ export default function PlatformLogModal({
                     // 分離日期和時間
                     const [date, time] = log.operateTime.split(" ");
                     return (
-                      <Tr
-                        key={log.id}
-                        bg={index % 2 === 0 ? "blackAlpha.50" : "transparent"}
-                      >
+                      <Tr key={log.id} bg={index % 2 === 1 ? "bg.stripe" : "transparent"}>
                         <Td>{log.item}</Td>
-                        <Td color="gray.600" whiteSpace="pre-line">
+                        <Td color="text.secondary" whiteSpace="pre-line">
                           {log.beforeValue}
                         </Td>
-                        <Td color="gray.600" whiteSpace="pre-line">
+                        <Td color="text.secondary" whiteSpace="pre-line">
                           {log.afterValue}
                         </Td>
                         <Td>{log.operator}</Td>
-                        <Td color="gray.600">
+                        <Td color="text.secondary">
                           <Box>{date}</Box>
                           <Box>{time}</Box>
                         </Td>
@@ -232,7 +234,7 @@ export default function PlatformLogModal({
                   })
                 ) : (
                   <Tr>
-                    <Td colSpan={5} textAlign="center" py={8} color="gray.500">
+                    <Td colSpan={5} textAlign="center" py={8} color="text.tertiary">
                       查無紀錄
                     </Td>
                   </Tr>
@@ -242,7 +244,7 @@ export default function PlatformLogModal({
           </TableContainer>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="teal" onClick={onClose}>
+          <Button variant="solidSecondary" onClick={onClose}>
             關閉
           </Button>
         </ModalFooter>
