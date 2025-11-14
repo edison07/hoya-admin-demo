@@ -19,9 +19,6 @@ import {
   usePlatformLogs,
 } from "@/hooks/usePlatform";
 
-// 自定義 hooks 匯入
-import { useDebounce } from "@/hooks/useDebounce";
-
 // 元件匯入
 import EditPlatformModal from "@/components/WithdrawPlatform/EditPlatformModal";
 import PlatformTable from "@/components/WithdrawPlatform/PlatformTable";
@@ -60,9 +57,6 @@ export default function WithdrawPlatformPage() {
     updateTime: "",
   });
 
-  // 使用防抖處理篩選條件，避免頻繁觸發篩選計算（500ms 延遲）
-  const debouncedSearchFilters = useDebounce(searchFilters, 500);
-
   // 使用 React Query 取得平台列表
   const { data: platforms = [], isLoading, error } = usePlatforms();
 
@@ -76,32 +70,32 @@ export default function WithdrawPlatformPage() {
     error: logsError,
   } = usePlatformLogs(logPlatform?.id || 0, isLogOpen && !!logPlatform);
 
-  // 使用 useMemo 進行客戶端篩選（使用防抖後的篩選條件）
+  // 使用 useMemo 進行客戶端篩選
   const filteredData = useMemo(() => {
     let result = platforms;
 
     // 根據平台名稱篩選
-    if (debouncedSearchFilters.platformName !== "all") {
+    if (searchFilters.platformName !== "all") {
       result = result.filter(
-        (item) => item.platformName === debouncedSearchFilters.platformName,
+        (item) => item.platformName === searchFilters.platformName,
       );
     }
 
     // 根據提幣功能篩選
-    if (debouncedSearchFilters.withdrawEnabled !== "all") {
-      const isEnabled = debouncedSearchFilters.withdrawEnabled === "enabled";
+    if (searchFilters.withdrawEnabled !== "all") {
+      const isEnabled = searchFilters.withdrawEnabled === "enabled";
       result = result.filter((item) => item.withdrawEnabled === isEnabled);
     }
 
     // 根據更新時間篩選
-    if (debouncedSearchFilters.updateTime) {
+    if (searchFilters.updateTime) {
       result = result.filter((item) =>
-        item.updateTime.startsWith(debouncedSearchFilters.updateTime),
+        item.updateTime.startsWith(searchFilters.updateTime),
       );
     }
 
     return result;
-  }, [platforms, debouncedSearchFilters]);
+  }, [platforms, searchFilters]);
 
   // 處理搜尋
   const handleSearch = (filters: SearchFilters) => {
