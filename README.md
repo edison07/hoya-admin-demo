@@ -23,6 +23,9 @@
 - **React Router v6** - 路由管理
 - **Yup** - 表單驗證 Schema
 
+### 工具函式庫
+- **Day.js** - 輕量級日期時間處理庫
+
 ### API 與開發工具
 - **Axios** - HTTP 客戶端（含攔截器）
 - **Mock Service Worker (MSW)** - API 模擬
@@ -676,6 +679,7 @@ export const exampleSchema = yup.object({
 - [React Router 官方文件](https://reactrouter.com/)
 - [MSW 官方文件](https://mswjs.io/)
 - [Yup 官方文件](https://github.com/jquense/yup)
+- [Day.js 官方文件](https://day.js.org/)
 
 ## 授權
 
