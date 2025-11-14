@@ -10,7 +10,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 /**
  * 使用者權限介面
  */
-export interface UserPermissions {
+interface UserPermissions {
   canEdit: boolean; // 是否可以修改平台
   canViewLog: boolean; // 是否可以查看日誌
 }
@@ -18,7 +18,7 @@ export interface UserPermissions {
 /**
  * 權限狀態介面
  */
-export interface PermissionState {
+interface PermissionState {
   permissions: UserPermissions;
 }
 
