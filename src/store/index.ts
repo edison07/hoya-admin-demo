@@ -7,7 +7,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 // Reducer 匯入
-import permissionReducer from "./slices/permissionSlice";
 import userReducer from "./slices/userSlice";
 
 /**
@@ -15,7 +14,6 @@ import userReducer from "./slices/userSlice";
  */
 export const store = configureStore({
   reducer: {
-    permission: permissionReducer,
     user: userReducer,
   },
 });
