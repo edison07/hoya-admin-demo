@@ -40,11 +40,11 @@ export default function PermsWrapper({
   children,
   permission,
 }: PermsWrapperProps) {
-  // 從 Redux store 讀取使用者權限
-  const permissions = useAppSelector((state) => state.permission.permissions);
+  // 從 Redux store 讀取使用者資訊和權限
+  const user = useAppSelector((state) => state.user.user);
 
-  // 檢查使用者是否擁有指定權限
-  const hasPermission = permissions[permission];
+  // 檢查使用者是否擁有指定權限（若使用者不存在則視為無權限）
+  const hasPermission = user?.permissions[permission] ?? false;
 
   // 如果沒有權限，不渲染任何內容
   if (!hasPermission) {
