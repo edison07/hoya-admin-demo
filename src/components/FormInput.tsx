@@ -48,9 +48,9 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     const inputType = isPasswordType && showPassword ? "text" : type;
 
     // === 提取共用的 className ===
-    const inputClassName = `focus:border-primary focus:ring-primary block w-full rounded-md border px-3 py-2 text-black shadow-sm focus:outline-none sm:text-sm ${
-      error ? "border-error!" : "border-border!"
-    } ${props.disabled ? "cursor-not-allowed bg-gray-100" : ""}`;
+    const inputClassName = `focus:border-border-focus focus:ring-border-focus block w-full rounded-md border px-3 py-2 text-black shadow-sm focus:outline-none sm:text-sm 
+    ${error ? "border-error" : "border-border"} 
+    ${props.disabled ? "cursor-not-allowed bg-gray-100" : ""}`;
 
     // === UI 渲染 ===
     return (
