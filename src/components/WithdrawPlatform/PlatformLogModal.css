@@ -1,0 +1,35 @@
+/**
+ * PlatformLogModal DataGrid 樣式
+ * 用於自定義 react-data-grid 的樣式
+ */
+
+.datagrid-wrapper {
+  /* 第一行（表頭）樣式 */
+  & .rdg-header-row {
+    background: transparent;
+    background-color: transparent;
+    font-weight: normal;
+  }
+
+  /* 偶數行背景色 */
+  & .rdg-row:nth-child(even) {
+    background: var(--color-bg-stripe);
+  }
+
+  /* 奇數行背景白色 */
+  & .rdg-row:nth-child(odd) {
+    background: white;
+  }
+
+  /* 儲存格樣式 */
+  & .rdg-cell {
+    cursor: default;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  /* 第一列左側 padding */
+  & .rdg-cell:first-child {
+    padding-left: 24px;
+  }
+}
