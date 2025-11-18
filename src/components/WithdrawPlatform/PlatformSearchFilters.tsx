@@ -4,7 +4,7 @@
  */
 
 // React 核心匯入
-import { useState } from "react";
+import { useState, forwardRef } from "react";
 
 // Chakra UI 元件匯入
 import {
@@ -13,11 +13,14 @@ import {
   GridItem,
   FormControl,
   FormLabel,
-  Input,
   Select,
   Button,
 } from "@chakra-ui/react";
-import { ChevronDownIcon } from "@chakra-ui/icons";
+import { ChevronDownIcon, CalendarIcon } from "@chakra-ui/icons";
+
+// react-datepicker 匯入
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 // 類型定義匯入
 import type { Platform } from "@/types/platform";
@@ -28,7 +31,7 @@ import type { Platform } from "@/types/platform";
 export interface SearchFilters {
   platformName: string;
   withdrawEnabled: string;
-  updateTime: string;
+  updateTime: string; // 格式: YYYY-MM-DD
 }
 
 /**
@@ -39,6 +42,33 @@ interface PlatformSearchFiltersProps {
   onSearch: (filters: SearchFilters) => void; // 搜尋回調
   onReset: () => void; // 重置回調
 }
+
+/**
+ * 自訂日期選擇按鈕元件
+ * 用作 react-datepicker 的觸發按鈕
+ */
+interface CustomDateButtonProps {
+  value?: string;
+  onClick?: () => void;
+}
+
+const CustomDateButton = forwardRef<HTMLButtonElement, CustomDateButtonProps>(
+  ({ value, onClick }, ref) => (
+    <Button
+      ref={ref}
+      onClick={onClick}
+      leftIcon={<CalendarIcon />}
+      variant="outline"
+      w="200px"
+      justifyContent="flex-start"
+      fontWeight="normal"
+      color={value ? "text.primary" : "text.placeholder"}
+      bgColor="white"
+    >
+      {value || "選擇日期"}
+    </Button>
+  ),
+);
 
 /**
  * 平台搜尋篩選元件
@@ -55,14 +85,27 @@ export default function PlatformSearchFilters({
   // 搜尋條件狀態
   const [platformName, setPlatformName] = useState("all");
   const [withdrawEnabled, setWithdrawEnabled] = useState("all");
-  const [updateTime, setUpdateTime] = useState("");
+  const [updateTime, setUpdateTime] = useState<Date | null>(null);
+
+  /**
+   * 將 Date 物件轉換為 YYYY-MM-DD 格式字串
+   * @param date - Date 物件
+   * @returns YYYY-MM-DD 格式的日期字串
+   */
+  const formatDateToString = (date: Date | null): string => {
+    if (!date) return "";
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
   // 處理搜尋
   const handleSearch = () => {
     onSearch({
       platformName,
       withdrawEnabled,
-      updateTime,
+      updateTime: formatDateToString(updateTime),
     });
   };
 
@@ -70,7 +113,7 @@ export default function PlatformSearchFilters({
   const handleReset = () => {
     setPlatformName("all");
     setWithdrawEnabled("all");
-    setUpdateTime("");
+    setUpdateTime(null);
     onReset();
   };
 
@@ -121,17 +164,16 @@ export default function PlatformSearchFilters({
             <FormLabel fontSize="sm" fontWeight="semibold">
               更新時間
             </FormLabel>
-            <Input
-              type="date"
-              value={updateTime}
-              onChange={(e) => setUpdateTime(e.target.value)}
-              cursor="pointer"
-              sx={{
-                "::-webkit-calendar-picker-indicator": {
-                  filter: "invert(0.5)",
-                  cursor: "pointer",
-                },
-              }}
+            <DatePicker
+              selected={updateTime}
+              onChange={(date: Date | null) => setUpdateTime(date)}
+              dateFormat="yyyy-MM-dd"
+              customInput={
+                <CustomDateButton value={formatDateToString(updateTime)} />
+              }
+              showYearDropdown
+              showMonthDropdown
+              dropdownMode="select"
             />
           </FormControl>
         </GridItem>
@@ -150,11 +192,7 @@ export default function PlatformSearchFilters({
         >
           展開
         </Button>
-        <Button
-          variant="ghost"
-          color="secondary.default"
-          onClick={handleReset}
-        >
+        <Button variant="ghost" color="secondary.default" onClick={handleReset}>
           重置
         </Button>
         <Button
