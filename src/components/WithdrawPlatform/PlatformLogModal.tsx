@@ -117,6 +117,66 @@ export default function PlatformLogModal({
     return result.sort((a, b) => b.operateTime.localeCompare(a.operateTime));
   }, [platform, logs, startDate, endDate]);
 
+  // 渲染表格內容
+  const renderTableBody = () => {
+    // Loading 狀態
+    if (isLoading) {
+      return (
+        <Tr>
+          <Td colSpan={5} textAlign="center" py={8}>
+            <Flex justify="center" align="center" gap={2}>
+              <Spinner size="sm" color="primary.default" />
+              <Text color="text.secondary">載入日誌中...</Text>
+            </Flex>
+          </Td>
+        </Tr>
+      );
+    }
+
+    // Error 狀態
+    if (error) {
+      return (
+        <Tr>
+          <Td colSpan={5} textAlign="center" py={8} color="status.error">
+            載入日誌時發生錯誤：{error.message}
+          </Td>
+        </Tr>
+      );
+    }
+
+    // 無資料狀態
+    if (filteredLogs.length === 0) {
+      return (
+        <Tr>
+          <Td colSpan={5} textAlign="center" py={8} color="text.tertiary">
+            查無紀錄
+          </Td>
+        </Tr>
+      );
+    }
+
+    // 有資料 - 渲染日誌列表
+    return filteredLogs.map((log, index) => {
+      const [date, time] = log.operateTime.split(" ");
+      return (
+        <Tr key={log.id} bg={index % 2 === 1 ? "bg.stripe" : "transparent"}>
+          <Td>{log.item}</Td>
+          <Td color="text.secondary" whiteSpace="pre-line">
+            {log.beforeValue}
+          </Td>
+          <Td color="text.secondary" whiteSpace="pre-line">
+            {log.afterValue}
+          </Td>
+          <Td>{log.operator}</Td>
+          <Td color="text.secondary">
+            <Box>{date}</Box>
+            <Box>{time}</Box>
+          </Td>
+        </Tr>
+      );
+    });
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size="6xl">
       <ModalOverlay />
@@ -195,51 +255,7 @@ export default function PlatformLogModal({
                   <Th>操作時間</Th>
                 </Tr>
               </Thead>
-              <Tbody>
-                {isLoading ? (
-                  <Tr>
-                    <Td colSpan={5} textAlign="center" py={8}>
-                      <Flex justify="center" align="center" gap={2}>
-                        <Spinner size="sm" color="primary.default" />
-                        <Text color="text.secondary">載入日誌中...</Text>
-                      </Flex>
-                    </Td>
-                  </Tr>
-                ) : error ? (
-                  <Tr>
-                    <Td colSpan={5} textAlign="center" py={8} color="status.error">
-                      載入日誌時發生錯誤：{error.message}
-                    </Td>
-                  </Tr>
-                ) : filteredLogs.length > 0 ? (
-                  filteredLogs.map((log, index) => {
-                    // 分離日期和時間
-                    const [date, time] = log.operateTime.split(" ");
-                    return (
-                      <Tr key={log.id} bg={index % 2 === 1 ? "bg.stripe" : "transparent"}>
-                        <Td>{log.item}</Td>
-                        <Td color="text.secondary" whiteSpace="pre-line">
-                          {log.beforeValue}
-                        </Td>
-                        <Td color="text.secondary" whiteSpace="pre-line">
-                          {log.afterValue}
-                        </Td>
-                        <Td>{log.operator}</Td>
-                        <Td color="text.secondary">
-                          <Box>{date}</Box>
-                          <Box>{time}</Box>
-                        </Td>
-                      </Tr>
-                    );
-                  })
-                ) : (
-                  <Tr>
-                    <Td colSpan={5} textAlign="center" py={8} color="text.tertiary">
-                      查無紀錄
-                    </Td>
-                  </Tr>
-                )}
-              </Tbody>
+              <Tbody>{renderTableBody()}</Tbody>
             </Table>
           </TableContainer>
         </ModalBody>
