@@ -4,7 +4,7 @@
  */
 
 // React 核心 Hooks
-import { useState, useCallback } from "react"; // useState: 狀態管理, useCallback: 函式記憶化
+import { useState } from "react"; // useState: 狀態管理
 
 // Chakra UI 元件匯入
 import {
@@ -115,15 +115,17 @@ export default function LoginPage() {
     }
   };
 
-  // 使用 useCallback 記憶化 onBlur 處理函式
-  const handleUsernameBlur = useCallback(
-    () => handleBlur("username"),
-    [username, password, handleBlur],
-  );
-  const handlePasswordBlur = useCallback(
-    () => handleBlur("password"),
-    [username, password, handleBlur],
-  );
+  /**
+   * 使用者名稱欄位失去焦點處理函式
+   * 當使用者離開帳號輸入框時觸發驗證
+   */
+  const handleUsernameBlur = () => handleBlur("username");
+
+  /**
+   * 密碼欄位失去焦點處理函式
+   * 當使用者離開密碼輸入框時觸發驗證
+   */
+  const handlePasswordBlur = () => handleBlur("password");
 
   /**
    * 處理表單提交
@@ -215,30 +217,29 @@ export default function LoginPage() {
 
   // === UI 渲染 ===
   return (
-    // 替換 Flex (主容器)
+    // 主容器 - 全螢幕 flex 佈局
     <div className="flex min-h-screen bg-white">
-      {/* 替換 Flex (左側區域 - 登入表單) */}
+      {/* 左側區域 - 登入表單容器（響應式：手機全寬，桌面 1/2 寬） */}
       <div className="flex w-full items-center justify-center lg:w-1/2">
-        {/* 替換 Box (表單容器) */}
+        {/* 表單卡片 - 圓角陰影樣式 */}
         <div className="max-w-md rounded-2xl bg-white p-8 shadow-2xl">
-          {/* 替換 VStack (標題區域) */}
+          {/* 標題區域 - 垂直堆疊居中 */}
           <div className="mb-8 space-y-4 text-center">
-            {/* 替換 Heading */}
+            {/* 應用程式標題 */}
             <h1 className="text-primary-light text-3xl font-bold">
               HOYA BIT Admin
             </h1>
-            {/* 替換 Text */}
+            {/* 提示文字 */}
             <p className="text-sm font-bold text-gray-400">
               請輸入你的帳號和密碼來登入
             </p>
           </div>
 
-          {/* 登入表單 */}
-          {/* onSubmit: 表單提交時呼叫 handleSubmit */}
+          {/* 登入表單 - 提交時觸發 handleSubmit */}
           <form onSubmit={handleSubmit}>
-            {/* 替換 VStack (表單欄位垂直堆疊) */}
+            {/* 表單欄位容器 - 垂直堆疊，間距 5 */}
             <div className="space-y-5">
-              {/* 帳號輸入欄位 */}
+              {/* 帳號輸入欄位 - 支援即時驗證和錯誤顯示 */}
               <FormInput
                 label="帳號"
                 type="text"
@@ -250,7 +251,7 @@ export default function LoginPage() {
                 autoComplete="username"
               />
 
-              {/* 密碼輸入欄位 */}
+              {/* 密碼輸入欄位 - 帶顯示/隱藏切換功能 */}
               <FormInput
                 label="密碼"
                 type="password"
@@ -262,14 +263,15 @@ export default function LoginPage() {
                 autoComplete="current-password"
               />
 
-              {/* 替換 Button (登入按鈕) */}
+              {/* 登入按鈕 - 載入中時顯示 Spinner 並禁用 */}
               <button
                 type="submit"
-                className={`bg-primary text-primary-foreground hover:bg-brand-600 focus:ring-primary w-full rounded-md border border-transparent px-4 py-2 text-sm font-medium shadow-sm focus:ring-2 focus:ring-offset-2 focus:outline-none ${
+                className={`bg-primary text-primary-foreground hover:bg-brand-600 w-full rounded-md px-4 py-2 text-sm font-medium shadow-sm focus:outline-none ${
                   loginMutation.isPending ? "cursor-not-allowed opacity-70" : ""
                 } `}
                 disabled={loginMutation.isPending}
               >
+                {/* 按鈕內容 - 根據載入狀態顯示不同內容 */}
                 {loginMutation.isPending ? (
                   <span className="flex items-center justify-center">
                     <Spinner size="sm" className="mr-2" /> 登入中
@@ -281,16 +283,16 @@ export default function LoginPage() {
             </div>
           </form>
 
-          {/* 替換 Text (測試帳號提示文字) */}
+          {/* 測試帳號提示文字 - 方便開發測試 */}
           <p className="mt-6 text-center text-sm text-gray-600">
             測試帳號: admin / Admin123
           </p>
         </div>
       </div>
 
-      {/* 替換 Flex (右側區域 - Logo 展示) */}
+      {/* 右側區域 - Logo 展示（桌面版顯示，手機版隱藏） */}
       <div className="hidden w-1/2 items-center justify-center lg:flex">
-        {/* 替換 Image */}
+        {/* 應用程式 Logo - 縮小至 80% */}
         <img src={logo} alt="App logo" className="scale-80 transform" />
       </div>
     </div>

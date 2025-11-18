@@ -13,7 +13,7 @@ import type { RootState, AppDispatch } from "./index";
 /**
  * 使用 TypeScript 類型的 useDispatch hook
  */
-export const useAppDispatch: () => AppDispatch = useDispatch;
+export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
 
 /**
  * 使用 TypeScript 類型的 useSelector hook

@@ -71,6 +71,8 @@ export default function WithdrawPlatformPage() {
   } = usePlatformLogs(logPlatform?.id || 0, isLogOpen && !!logPlatform);
 
   // 使用 useMemo 進行客戶端篩選
+  // useMemo 用來記憶某段運算結果，僅在依賴 (platforms, searchFilters) 改變時才重新執行計算。
+  // 避免 list 過大或篩選邏輯複雜時，導致每次 render 都重算，提升效能。
   const filteredData = useMemo(() => {
     let result = platforms;
 
@@ -153,7 +155,7 @@ export default function WithdrawPlatformPage() {
             position: "top",
           });
         },
-      }
+      },
     );
   };
 
