@@ -1,0 +1,85 @@
+/**
+ * useLogin.ts - 登入邏輯自訂 Hook
+ * 封裝登入 API 呼叫、Token 儲存和頁面導航邏輯
+ */
+
+// React Query 相關匯入
+import { useMutation } from "@tanstack/react-query"; // useMutation: 處理變更操作的 Hook
+
+// React Router 相關匯入
+import { useNavigate, useLocation } from "react-router-dom"; // useNavigate: 程式化導航 Hook, useLocation: 取得當前位置
+
+// Redux 相關匯入
+import { useAppDispatch } from "@/store/hooks"; // Redux dispatch hook
+import { setUser } from "@/store/slices/userSlice"; // 設定使用者 action
+
+// 服務層匯入
+import { authService } from "@/services/auth.service"; // 認證服務
+
+// 類型定義匯入
+import type { LoginRequest } from "@/types/auth"; // 登入請求類型
+
+/**
+ * React Router Location State 類型定義
+ * 定義從 ProtectedRoute 傳遞過來的 state 結構
+ */
+interface LocationState {
+  from?: {
+    pathname: string; // 使用者原本想訪問的路徑
+  };
+}
+
+/**
+ * useLogin Hook
+ * 提供登入功能，包含以下步驟：
+ * 1. 呼叫登入 API
+ * 2. 儲存認證 Token 到 localStorage
+ * 3. 儲存使用者資訊到 localStorage
+ * 4. 導航到原頁面或首頁
+ *
+ * @returns UseMutationResult - React Query mutation 物件
+ *   - mutate/mutateAsync: 執行登入
+ *   - isPending: 是否正在執行
+ *   - isError: 是否發生錯誤
+ *   - error: 錯誤物件
+ */
+export const useLogin = () => {
+  // 取得導航函式
+  const navigate = useNavigate();
+
+  // 取得當前位置（用於獲取從哪裡被重新導向過來的）
+  const location = useLocation();
+
+  // 取得 Redux dispatch 函式
+  const dispatch = useAppDispatch();
+
+  // 返回 React Query mutation
+  return useMutation({
+    // mutationFn: 定義 mutation 要執行的函式
+    // 接收登入憑證，呼叫 authService.login API
+    mutationFn: (credentials: LoginRequest) => authService.login(credentials),
+
+    // onSuccess: 當 API 呼叫成功後執行
+    // data: API 返回的資料
+    onSuccess: (data) => {
+      // 檢查登入是否成功且有返回資料
+      if (data.success && data.data) {
+        // 儲存認證 Token（使用 authService 的方法）
+        authService.setToken(data.data.token);
+
+        // 將使用者資訊序列化後儲存到 localStorage
+        localStorage.setItem("user", JSON.stringify(data.data.user));
+
+        // 將使用者資訊儲存到 Redux（包含權限）
+        dispatch(setUser(data.data.user));
+
+        // 取得使用者原本想訪問的頁面（從 location.state.from 讀取）
+        // 如果沒有，則導航到首頁
+        const from = (location.state as LocationState)?.from?.pathname || "/";
+
+        // 導航到目標頁面，replace: true 表示替換當前歷史記錄
+        navigate(from, { replace: true });
+      }
+    },
+  });
+};

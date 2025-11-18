@@ -1,0 +1,29 @@
+<!-- 宣告這是一份 HTML5 文件，讓瀏覽器用標準模式解析，不會進入相容模式。 -->
+<!doctype html>
+<!-- 設定語言屬性為英文。這對 SEO 與螢幕閱讀器有幫助。 -->
+<html lang="en">
+  <head>
+    <!-- 指定字元編碼為 UTF-8，支援多語言（例如中文、emoji）。 -->
+    <meta charset="UTF-8" />
+    <!-- 設定網站 favicon（在瀏覽器分頁上顯示的小圖示）。 -->
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <!-- 設定行動裝置視窗的寬度與縮放比例：
+     width=device-width 代表版面寬度等於螢幕寬度。
+     initial-scale=1.0 表示初始縮放比例為 1（不放大或縮小）。
+     這是讓網站能響應式顯示（Responsive）的關鍵設定。 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 網頁標題，會顯示在分頁標籤上。 -->
+    <title>hoya-admin-demo</title>
+  </head>
+  <body>
+    <!-- 這是 React/Vite 應用程式的掛載點 (mount point)。
+     你的 React 程式會在 src/main.tsx 中透過 createRoot(document.getElementById('root')) 把整個 App 插進這個 <div> 裡。 -->
+    <div id="root"></div>
+    <!-- 這行是 Vite 的入口指令：
+     指定 JavaScript 模組入口點 /src/main.tsx
+     type="module" 告訴瀏覽器這是 ES Module（支援 import/export）
+     在開發時由 Vite 自動解析 import 路徑、熱更新
+     打包時會被替換為壓縮後的 bundle -->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
