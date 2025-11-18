@@ -99,16 +99,20 @@ export default function EditPlatformModal({
         <ModalCloseButton />
         <ModalBody>
           {/* 提幣功能開關 */}
-          <FormControl display="flex" alignItems="center" mb={4}>
-            <FormLabel htmlFor="withdraw-switch" mb={0}>
-              提幣功能
-            </FormLabel>
-            <Switch
-              id="withdraw-switch"
-              isChecked={editWithdrawEnabled}
-              onChange={(e) => setEditWithdrawEnabled(e.target.checked)}
-              colorScheme="teal"
-            />
+          <FormControl mb={4}>
+            <Flex align="center" gap={4}>
+              <FormLabel htmlFor="withdraw-switch" mb={0} minW="60px">
+                提幣功能
+              </FormLabel>
+              <Box flex="1">
+                <Switch
+                  id="withdraw-switch"
+                  isChecked={editWithdrawEnabled}
+                  onChange={(e) => setEditWithdrawEnabled(e.target.checked)}
+                  colorScheme="teal"
+                />
+              </Box>
+            </Flex>
           </FormControl>
 
           {/* 備註輸入框 */}
