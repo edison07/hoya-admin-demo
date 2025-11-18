@@ -12,8 +12,10 @@
 - **Vite** - 快速建構工具
 
 ### UI 框架
-- **Chakra UI** - 主要 UI 元件庫
-- **Tailwind CSS** - 原子化 CSS 框架（用於自訂樣式和動畫）
+- **Chakra UI** - 主要 UI 元件庫（Modal、Button、Form 等標準元件）
+- **Tailwind CSS** - 原子化 CSS 框架（自訂樣式、動畫、第三方元件樣式）
+- **react-data-grid** - 高效能資料表格元件
+- **react-datepicker** - 日期選擇器元件
 
 ### 狀態管理
 - **Redux Toolkit** - 客戶端狀態管理（使用者狀態、權限）
@@ -67,13 +69,13 @@ hoya-admin-demo/
 │   │   ├── Loading.tsx                # 載入動畫（Tailwind 實作）
 │   │   ├── PermsWrapper.tsx           # 權限包裝元件
 │   │   ├── ProtectedRoute.tsx         # 路由保護元件
-│   │   ├── DateRangePicker.tsx        # 日期範圍選擇器
+│   │   ├── DateRangePicker.tsx        # 日期範圍選擇器（封裝 react-datepicker）
 │   │   └── WithdrawPlatform/          # 提幣平台業務元件
-│   │       ├── PlatformTable.tsx            # 平台列表表格
-│   │       ├── PlatformSearchFilters.tsx    # 搜尋篩選器
-│   │       ├── PlatformActionsCell.tsx      # 操作按鈕儲存格
+│   │       ├── PlatformTable.tsx            # 平台列表表格（使用 PlatformActionsCell）
+│   │       ├── PlatformSearchFilters.tsx    # 搜尋篩選器（react-datepicker）
+│   │       ├── PlatformActionsCell.tsx      # 操作按鈕儲存格（修改/日誌按鈕）
 │   │       ├── EditPlatformModal.tsx        # 編輯平台 Modal
-│   │       └── PlatformLogModal.tsx         # 平台日誌 Modal
+│   │       └── PlatformLogModal.tsx         # 平台日誌 Modal（react-data-grid + Tailwind）
 │   ├── hooks/                # 自訂 Hooks
 │   │   ├── useLogin.ts                # 登入邏輯 Hook（React Query）
 │   │   └── usePlatform.ts             # 平台資料 Hook（React Query）
@@ -238,6 +240,61 @@ import { Button } from "@/components/Button";
 // ❌ 不推薦：使用相對路徑
 import { Button } from "../../../components/Button";
 ```
+
+---
+
+## UI 框架使用策略
+
+本專案採用 **Chakra UI + Tailwind CSS 混合架構**，各自負責不同的 UI 需求：
+
+### Chakra UI 使用場景
+適合標準 UI 元件和複雜互動：
+- **Modal、Dialog** - 彈窗和對話框
+- **Button、Input、Form** - 表單元件
+- **Menu、Popover、Toast** - 彈出式元件
+- **複雜佈局** - 需要響應式 props 的場景
+
+**優勢**：
+- 提供完整的元件系統和主題
+- 內建 `sx` prop 可以直接寫 CSS-in-JS
+- 響應式 props（如 `display={{ base: "none", md: "block" }}`）
+
+### Tailwind CSS 使用場景
+適合自訂樣式和第三方元件：
+- **自訂動畫** - Loading 動畫、過渡效果
+- **第三方元件樣式** - react-data-grid、react-datepicker
+- **工具類別** - 快速佈局調整
+- **Arbitrary Variants** - 巢狀選擇器（如 `[&_.rdg-cell]:cursor-default`）
+
+**優勢**：
+- 輕量級，只打包使用到的 class
+- 支援任意變體語法，可以樣式化第三方元件內部元素
+- 更適合細粒度的樣式控制
+
+### 混合使用範例
+
+```tsx
+// ✅ 推薦：Chakra 元件 + Tailwind 工具類別
+<Box className="flex items-center gap-4">
+  <Button variant="solid">提交</Button>
+</Box>
+
+// ✅ 推薦：Tailwind 樣式化第三方元件
+<div className="[&_.rdg-cell]:cursor-default [&_.rdg-row:nth-child(even)]:bg-stripe">
+  <DataGrid columns={columns} rows={rows} />
+</div>
+
+// ✅ 推薦：Chakra 的 sx prop 處理複雜樣式
+<Table sx={{ "& td": { py: 4, borderBottom: "none" } }}>
+  {/* ... */}
+</Table>
+```
+
+### 設計原則
+1. **優先使用 Chakra** - 對於標準 UI 元件
+2. **使用 Tailwind** - 當需要自訂樣式或處理第三方元件時
+3. **避免衝突** - Chakra 設定 `resetCSS={false}` 以保留 Tailwind 樣式
+4. **語意化 Tokens** - 兩個框架共用相同的設計 tokens（顏色、間距等）
 
 ---
 
@@ -496,24 +553,31 @@ export const handlers = [
 ### 平台列表
 - 表格展示所有平台資訊
 - 提幣功能狀態 Badge（啟用/停用）
+- 操作按鈕（使用 `PlatformActionsCell` 元件模組化）
 - 分頁和排序（TODO）
 
 ### 搜尋與篩選
 - 依平台名稱篩選
 - 依提幣功能狀態篩選
-- 依更新時間篩選
+- 依更新時間篩選（使用 `react-datepicker` 的日期範圍選擇器）
 - 即時篩選（使用 `useMemo`）
+- 支援查詢、重置功能
 
 ### 編輯功能
 - Modal 彈窗編輯介面
 - 修改提幣功能狀態（啟用/停用）
-- 修改備註資訊
+- 修改備註資訊（必填欄位，最多 200 字）
+- 表單控制項左對齊設計（Switch 和 Textarea 使用一致的 Flex 佈局）
 - 樂觀更新 + 自動重新驗證
 
 ### 日誌查看
 - 獨立 Modal 展示操作日誌
-- 顯示操作時間、操作人、操作內容
+- 使用 `react-data-grid` 高效能表格元件
+- 支援日期範圍篩選（使用 `react-datepicker`）
+- 顯示操作時間、操作人、操作內容、異動前後值
+- 多狀態渲染（使用 `renderTableBody()` 函式處理 Loading、Error、Empty、Data 狀態）
 - 僅有 `canViewLog` 權限的使用者可見
+- 使用 CSS 檔案樣式化 DataGrid（巢狀選擇器）
 
 ### 權限控制
 - 「修改」按鈕：需要 `canEdit` 權限
