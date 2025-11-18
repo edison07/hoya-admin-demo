@@ -17,7 +17,7 @@ import type { Platform } from "@/types/platform";
 interface PlatformActionsCellProps {
   platform: Platform;
   onEdit: (platform: Platform) => void;
-  onViewLog?: (platform: Platform) => void;
+  onViewLog: (platform: Platform) => void;
 }
 
 /**
@@ -34,7 +34,12 @@ export default function PlatformActionsCell({
     <Flex gap={2} align="center">
       {/* 使用 PermsWrapper 控制修改按鈕的顯示 */}
       <PermsWrapper permission="canEdit">
-        <Button size="sm" variant="link" onClick={() => onEdit(platform)}>
+        <Button
+          size="sm"
+          variant="link"
+          fontWeight="normal"
+          onClick={() => onEdit(platform)}
+        >
           修改
         </Button>
       </PermsWrapper>
@@ -48,7 +53,12 @@ export default function PlatformActionsCell({
 
       {/* 使用 PermsWrapper 控制日誌按鈕的顯示 */}
       <PermsWrapper permission="canViewLog">
-        <Button size="sm" variant="link" onClick={() => onViewLog?.(platform)}>
+        <Button
+          size="sm"
+          variant="link"
+          fontWeight="normal"
+          onClick={() => onViewLog(platform)}
+        >
           日誌
         </Button>
       </PermsWrapper>
