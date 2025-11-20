@@ -215,6 +215,22 @@ export default function LoginPage() {
     }
   };
 
+  /**
+   * 檢查表單是否可以提交
+   * 條件：
+   * 1. 帳號和密碼都有輸入值
+   * 2. 沒有任何驗證錯誤
+   * 3. 不在登入中狀態
+   */
+  const hasUsername = username.trim().length > 0;
+  const hasPassword = password.trim().length > 0;
+
+  const hasErrors = Boolean(errors.username || errors.password);
+
+  const isFormValid = hasUsername && hasPassword && !hasErrors;
+
+  const isButtonDisabled = !isFormValid || loginMutation.isPending;
+
   // === UI 渲染 ===
   return (
     // 主容器 - 全螢幕 flex 佈局
@@ -263,13 +279,15 @@ export default function LoginPage() {
                 autoComplete="current-password"
               />
 
-              {/* 登入按鈕 - 載入中時顯示 Spinner 並禁用 */}
+              {/* 登入按鈕 - 表單無效或載入中時禁用 */}
               <button
                 type="submit"
-                className={`bg-primary text-primary-foreground hover:bg-brand-600 w-full rounded-md px-4 py-2 text-sm font-medium shadow-sm focus:outline-none ${
-                  loginMutation.isPending ? "cursor-not-allowed opacity-70" : ""
+                className={`bg-primary text-primary-foreground w-full rounded-md px-4 py-2 text-sm font-medium shadow-sm transition-all focus:outline-none ${
+                  isButtonDisabled
+                    ? "cursor-not-allowed opacity-50"
+                    : "hover:bg-brand-600"
                 } `}
-                disabled={loginMutation.isPending}
+                disabled={isButtonDisabled}
               >
                 {/* 按鈕內容 - 根據載入狀態顯示不同內容 */}
                 {loginMutation.isPending ? (
